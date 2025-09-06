@@ -1,0 +1,165 @@
+/* Administrace kalkulátoru podlahového vytápění */
+
+.pv-admin-container {
+    display: flex;
+    gap: 2rem;
+    margin: 1rem 0;
+}
+
+.pv-admin-main {
+    flex: 1;
+    max-width: 800px;
+}
+
+.pv-admin-sidebar {
+    width: 300px;
+    flex-shrink: 0;
+}
+
+.pv-settings-section {
+    background: white;
+    border: 1px solid #ccd0d4;
+    border-radius: 4px;
+    margin-bottom: 2rem;
+    box-shadow: 0 1px 1px rgba(0,0,0,.04);
+}
+
+.pv-settings-section h2 {
+    background: #f1f1f1;
+    border-bottom: 1px solid #ccd0d4;
+    margin: 0;
+    padding: 1rem 1.5rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #23282d;
+}
+
+.pv-settings-section .form-table {
+    margin: 0;
+}
+
+.pv-settings-section .form-table th {
+    padding-left: 1.5rem;
+    padding-right: 1rem;
+}
+
+.pv-settings-section .form-table td {
+    padding-right: 1.5rem;
+}
+
+.pv-settings-section .form-table tr:last-child th,
+.pv-settings-section .form-table tr:last-child td {
+    border-bottom: none;
+    padding-bottom: 1.5rem;
+}
+
+.pv-color-picker {
+    width: 100px !important;
+}
+
+.pv-info-box {
+    background: white;
+    border: 1px solid #ccd0d4;
+    border-radius: 4px;
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+    box-shadow: 0 1px 1px rgba(0,0,0,.04);
+}
+
+.pv-info-box h3 {
+    margin: 0 0 1rem 0;
+    color: #23282d;
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+.pv-info-box h4 {
+    margin: 1rem 0 0.5rem 0;
+    color: #23282d;
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+.pv-info-box p {
+    margin: 0 0 0.5rem 0;
+    line-height: 1.5;
+}
+
+.pv-info-box code {
+    background: #f1f1f1;
+    padding: 0.25rem 0.5rem;
+    border-radius: 3px;
+    font-family: Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
+    font-size: 0.85rem;
+    display: block;
+    margin: 0.5rem 0;
+    padding: 0.5rem;
+    overflow-x: auto;
+}
+
+.pv-info-box ul {
+    margin: 0;
+    padding-left: 1.5rem;
+}
+
+.pv-info-box li {
+    margin-bottom: 0.25rem;
+    line-height: 1.4;
+}
+
+/* Responzivní layout pro mobily */
+@media (max-width: 782px) {
+    .pv-admin-container {
+        flex-direction: column;
+    }
+    
+    .pv-admin-sidebar {
+        width: 100%;
+        order: 2;
+    }
+    
+    .pv-admin-main {
+        order: 1;
+    }
+    
+    .pv-settings-section .form-table th,
+    .pv-settings-section .form-table td {
+        display: block;
+        width: 100%;
+        padding-left: 1rem;
+        padding-right: 1rem;
+    }
+    
+    .pv-settings-section .form-table th {
+        padding-bottom: 0.5rem;
+    }
+    
+    .pv-settings-section .form-table td {
+        padding-top: 0;
+        padding-bottom: 1rem;
+    }
+}
+
+/* Vylepšení pro WordPress admin */
+.pv-settings-section input[type="number"],
+.pv-settings-section input[type="email"],
+.pv-settings-section input[type="text"] {
+    width: 100%;
+    max-width: 300px;
+}
+
+.pv-settings-section .description {
+    font-style: italic;
+    color: #666;
+    margin-top: 0.25rem;
+}
+
+/* Highlight pro důležité nastavení */
+.pv-settings-section tr:hover {
+    background: #fafafa;
+}
+
+/* Success notice styling */
+.pv-admin-container .notice {
+    margin: 0 0 1rem 0;
+}

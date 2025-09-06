@@ -1,0 +1,542 @@
+/* Kalkulátor podlahového vytápění - CSS styly */
+
+.pv-calculator-container {
+    --primary-color: #0073aa;
+    --button-color: #00a32a;
+    --border-color: #ddd;
+    --background-color: #f9f9f9;
+    --text-color: #333;
+    --success-color: #46b450;
+    --error-color: #dc3232;
+    --border-radius: 8px;
+    --shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.pv-calculator {
+    max-width: 800px;
+    margin: 0 auto;
+    background: white;
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow);
+    padding: 2rem;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    line-height: 1.6;
+}
+
+.pv-calculator-title {
+    text-align: center;
+    color: var(--primary-color);
+    margin-bottom: 2rem;
+    font-size: 1.8rem;
+    font-weight: 600;
+    border-bottom: 2px solid var(--primary-color);
+    padding-bottom: 1rem;
+}
+
+/* Podlaží */
+.pv-floor {
+    border: 2px solid var(--border-color);
+    border-radius: var(--border-radius);
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    background: var(--background-color);
+    transition: all 0.3s ease;
+}
+
+.pv-floor:hover {
+    border-color: var(--primary-color);
+}
+
+.pv-floor-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.pv-floor-header h3 {
+    margin: 0;
+    color: var(--primary-color);
+    font-size: 1.3rem;
+}
+
+.pv-remove-floor {
+    background: var(--error-color);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.pv-remove-floor:hover {
+    background: #c32626;
+    transform: scale(1.1);
+}
+
+/* Formulářové řádky a skupiny */
+.pv-form-row {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+}
+
+.pv-form-group {
+    flex: 1;
+    min-width: 200px;
+}
+
+.pv-form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+    color: var(--text-color);
+}
+
+/* Ovládání plochy */
+.pv-area-control {
+    display: flex;
+    align-items: center;
+    background: white;
+    border: 2px solid var(--border-color);
+    border-radius: var(--border-radius);
+    overflow: hidden;
+    transition: border-color 0.2s ease;
+}
+
+.pv-area-control:focus-within {
+    border-color: var(--primary-color);
+}
+
+.pv-area-btn {
+    background: var(--primary-color);
+    color: white;
+    border: none;
+    padding: 0.75rem 1rem;
+    font-size: 1.2rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    min-width: 44px;
+}
+
+.pv-area-btn:hover {
+    background: #005a87;
+}
+
+.pv-area-input {
+    border: none;
+    padding: 0.75rem 1rem;
+    text-align: center;
+    font-size: 1.1rem;
+    font-weight: 600;
+    flex: 1;
+    min-width: 80px;
+}
+
+.pv-area-input:focus {
+    outline: none;
+}
+
+/* Radio tlačítka */
+.pv-radio-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.pv-radio-option {
+    display: flex;
+    align-items: flex-start;
+    cursor: pointer;
+    padding: 1rem;
+    border: 2px solid var(--border-color);
+    border-radius: var(--border-radius);
+    transition: all 0.2s ease;
+    background: white;
+}
+
+.pv-radio-option:hover {
+    border-color: var(--primary-color);
+    background: #f0f8ff;
+}
+
+.pv-radio-option input[type="radio"] {
+    display: none;
+}
+
+.pv-radio-custom {
+    width: 20px;
+    height: 20px;
+    border: 2px solid var(--border-color);
+    border-radius: 50%;
+    margin-right: 0.75rem;
+    position: relative;
+    flex-shrink: 0;
+    margin-top: 2px;
+    transition: all 0.2s ease;
+}
+
+.pv-radio-option input[type="radio"]:checked + .pv-radio-custom {
+    border-color: var(--primary-color);
+    background: var(--primary-color);
+}
+
+.pv-radio-option input[type="radio"]:checked + .pv-radio-custom::after {
+    content: '';
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    background: white;
+    border-radius: 50%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.pv-radio-content strong {
+    display: block;
+    color: var(--text-color);
+    margin-bottom: 0.25rem;
+}
+
+.pv-radio-content small {
+    color: #666;
+    font-size: 0.85rem;
+}
+
+/* Select a input pole */
+.pv-select-wrapper {
+    position: relative;
+}
+
+.pv-select, .pv-input {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 2px solid var(--border-color);
+    border-radius: var(--border-radius);
+    font-size: 1rem;
+    background: white;
+    transition: border-color 0.2s ease;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+}
+
+.pv-select {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+    background-position: right 0.75rem center;
+    background-repeat: no-repeat;
+    background-size: 1.5em 1.5em;
+    padding-right: 2.5rem;
+}
+
+.pv-select:focus, .pv-input:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(0, 115, 170, 0.1);
+}
+
+/* Checkbox */
+.pv-checkbox-group {
+    flex-basis: 100%;
+}
+
+.pv-checkbox-option {
+    display: flex;
+    align-items: flex-start;
+    cursor: pointer;
+    padding: 1rem;
+    border: 2px solid var(--border-color);
+    border-radius: var(--border-radius);
+    transition: all 0.2s ease;
+    background: white;
+}
+
+.pv-checkbox-option:hover {
+    border-color: var(--primary-color);
+    background: #f0f8ff;
+}
+
+.pv-checkbox-option input[type="checkbox"] {
+    display: none;
+}
+
+.pv-checkbox-custom {
+    width: 20px;
+    height: 20px;
+    border: 2px solid var(--border-color);
+    border-radius: 4px;
+    margin-right: 0.75rem;
+    position: relative;
+    flex-shrink: 0;
+    margin-top: 2px;
+    transition: all 0.2s ease;
+}
+
+.pv-checkbox-option input[type="checkbox"]:checked + .pv-checkbox-custom {
+    border-color: var(--primary-color);
+    background: var(--primary-color);
+}
+
+.pv-checkbox-option input[type="checkbox"]:checked + .pv-checkbox-custom::after {
+    content: '✓';
+    position: absolute;
+    color: white;
+    font-size: 14px;
+    font-weight: bold;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+/* Tlačítka */
+.pv-btn {
+    padding: 0.875rem 2rem;
+    border: none;
+    border-radius: var(--border-radius);
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-decoration: none;
+    display: inline-block;
+    text-align: center;
+    min-height: 44px;
+}
+
+.pv-btn-primary {
+    background: var(--button-color);
+    color: white;
+}
+
+.pv-btn-primary:hover {
+    background: #008a2e;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 163, 42, 0.3);
+}
+
+.pv-btn-secondary {
+    background: white;
+    color: var(--primary-color);
+    border: 2px solid var(--primary-color);
+}
+
+.pv-btn-secondary:hover {
+    background: var(--primary-color);
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 115, 170, 0.3);
+}
+
+.pv-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none !important;
+}
+
+/* Sekce přidání podlaží */
+.pv-add-floor-section {
+    text-align: center;
+    margin: 2rem 0;
+}
+
+/* Sekce kalkulace */
+.pv-calculation-section {
+    text-align: center;
+    margin: 2rem 0;
+}
+
+/* Výsledky */
+.pv-result {
+    background: var(--background-color);
+    border: 2px solid var(--success-color);
+    border-radius: var(--border-radius);
+    padding: 2rem;
+    margin: 2rem 0;
+    animation: slideIn 0.3s ease;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.pv-result-header h3 {
+    color: var(--success-color);
+    margin: 0 0 1rem 0;
+    font-size: 1.4rem;
+}
+
+.pv-result-details {
+    margin-bottom: 1.5rem;
+}
+
+.pv-result-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid #ddd;
+}
+
+.pv-result-item:last-child {
+    border-bottom: none;
+}
+
+.pv-result-total {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 1.3rem;
+    font-weight: bold;
+    color: var(--success-color);
+    border-top: 2px solid var(--success-color);
+    padding-top: 1rem;
+    margin-top: 1rem;
+}
+
+.pv-total-price {
+    font-size: 1.5rem;
+}
+
+/* Kontaktní sekce */
+.pv-contact-section {
+    background: var(--background-color);
+    border-radius: var(--border-radius);
+    padding: 2rem;
+    margin: 2rem 0;
+    border: 2px solid var(--primary-color);
+}
+
+.pv-contact-section h3 {
+    color: var(--primary-color);
+    margin: 0 0 1rem 0;
+}
+
+.pv-disclaimer {
+    color: #666;
+    font-style: italic;
+    display: block;
+    text-align: center;
+}
+
+/* Loading */
+.pv-loading {
+    text-align: center;
+    padding: 2rem;
+}
+
+.pv-loader {
+    border: 4px solid #f3f3f3;
+    border-top: 4px solid var(--primary-color);
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    animation: spin 1s linear infinite;
+    margin: 0 auto 1rem;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Zpráva o úspěchu */
+.pv-success-message {
+    text-align: center;
+    background: var(--background-color);
+    border: 2px solid var(--success-color);
+    border-radius: var(--border-radius);
+    padding: 3rem 2rem;
+    margin: 2rem 0;
+}
+
+.pv-success-icon {
+    background: var(--success-color);
+    color: white;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    font-weight: bold;
+    margin: 0 auto 1rem;
+}
+
+.pv-success-message h3 {
+    color: var(--success-color);
+    margin: 0 0 1rem 0;
+}
+
+/* Responzivní design */
+@media (max-width: 768px) {
+    .pv-calculator {
+        padding: 1rem;
+        margin: 1rem;
+    }
+    
+    .pv-form-row {
+        flex-direction: column;
+    }
+    
+    .pv-form-group {
+        min-width: auto;
+    }
+    
+    .pv-radio-group {
+        gap: 0.5rem;
+    }
+    
+    .pv-radio-option, .pv-checkbox-option {
+        padding: 0.75rem;
+    }
+    
+    .pv-result-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.25rem;
+    }
+    
+    .pv-result-total {
+        flex-direction: column;
+        gap: 0.5rem;
+        text-align: center;
+    }
+}
+
+@media (max-width: 480px) {
+    .pv-calculator-title {
+        font-size: 1.4rem;
+    }
+    
+    .pv-area-control {
+        flex-direction: column;
+    }
+    
+    .pv-area-btn {
+        border-radius: 0;
+    }
+    
+    .pv-area-input {
+        text-align: left;
+    }
+}

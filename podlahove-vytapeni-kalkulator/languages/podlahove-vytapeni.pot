@@ -1,0 +1,287 @@
+# Kalkulátor podlahového vytápění - Language Template
+# Copyright (C) 2025
+msgid ""
+msgstr ""
+"Project-Id-Version: Kalkulátor podlahového vytápění 1.0.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-09-04 12:00+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
+
+#: podlahove-vytapeni-kalkulator.php:45
+msgid "Kalkulátor podlahového vytápění"
+msgstr ""
+
+#: templates/calculator.php:15
+msgid "Podlaží"
+msgstr ""
+
+#: templates/calculator.php:25
+msgid "Plocha (m²)"
+msgstr ""
+
+#: templates/calculator.php:35
+msgid "Varianta instalace"
+msgstr ""
+
+#: templates/calculator.php:40
+msgid "Tacker systém"
+msgstr ""
+
+#: templates/calculator.php:41
+msgid "Instalace na folii"
+msgstr ""
+
+#: templates/calculator.php:46
+msgid "Systémová deska"
+msgstr ""
+
+#: templates/calculator.php:47
+msgid "S výstupky"
+msgstr ""
+
+#: templates/calculator.php:54
+msgid "Typ potrubí"
+msgstr ""
+
+#: templates/calculator.php:58
+msgid "Polyethylenová trubka 16x2"
+msgstr ""
+
+#: templates/calculator.php:59
+msgid "bez příplatku"
+msgstr ""
+
+#: templates/calculator.php:62
+msgid "Polyethylenová trubka 17x2"
+msgstr ""
+
+#: templates/calculator.php:65
+msgid "Polyethylenová trubka 18x2"
+msgstr ""
+
+#: templates/calculator.php:68
+msgid "Plastohliníková trubka 16x2"
+msgstr ""
+
+#: templates/calculator.php:71
+msgid "Plastohliníková trubka 18x2"
+msgstr ""
+
+#: templates/calculator.php:74
+msgid "Nevím - nechám si poradit"
+msgstr ""
+
+#: templates/calculator.php:80
+msgid "Zdroj tepla"
+msgstr ""
+
+#: templates/calculator.php:84
+msgid "Nízkoteplotní"
+msgstr ""
+
+#: templates/calculator.php:85
+msgid "TČ, kondenzační kotel, elektrokotel apod."
+msgstr ""
+
+#: templates/calculator.php:88
+msgid "Vysokoteplotní"
+msgstr ""
+
+#: templates/calculator.php:89
+msgid "Tuhá paliva, akumulační zásobníky apod."
+msgstr ""
+
+#: templates/calculator.php:92
+msgid "Kombinace s radiátory"
+msgstr ""
+
+#: templates/calculator.php:100
+msgid "Přidat podlaží"
+msgstr ""
+
+#: templates/calculator.php:105
+msgid "Vypočítat cenu"
+msgstr ""
+
+#: templates/calculator.php:112
+msgid "Orientační cena realizace"
+msgstr ""
+
+#: templates/calculator.php:120
+msgid "Celková cena:"
+msgstr ""
+
+#: templates/calculator.php:126
+msgid "Kontaktní údaje"
+msgstr ""
+
+#: templates/calculator.php:127
+msgid "Pro zobrazení detailního výpisu a možnost konzultace vyplňte prosím kontaktní údaje:"
+msgstr ""
+
+#: templates/calculator.php:132
+msgid "Email"
+msgstr ""
+
+#: templates/calculator.php:137
+msgid "Telefon"
+msgstr ""
+
+#: templates/calculator.php:145
+msgid "Mám zájem o kontaktování technické podpory pro upřesnění a zaslání detailního výpisu prvků pro můj projekt"
+msgstr ""
+
+#: templates/calculator.php:152
+msgid "Veškeré uvedené údaje slouží pouze pro interní účely „kalkulačky""
+msgstr ""
+
+#: templates/calculator.php:156
+msgid "Odeslat výpočet"
+msgstr ""
+
+#: templates/calculator.php:162
+msgid "Počítám..."
+msgstr ""
+
+#: templates/calculator.php:167
+msgid "Email byl úspěšně odeslán!"
+msgstr ""
+
+#: templates/calculator.php:168
+msgid "Na váš email jsme zaslali detailní výpočet nákladů. V případě zájmu o konzultaci vás budeme kontaktovat."
+msgstr ""
+
+#: templates/admin-page.php:15
+msgid "Cenové nastavení"
+msgstr ""
+
+#: templates/admin-page.php:20
+msgid "Tacker systém (Kč/m²)"
+msgstr ""
+
+#: templates/admin-page.php:28
+msgid "Cena za m² pro tacker systém (instalace na folii)"
+msgstr ""
+
+#: templates/admin-page.php:33
+msgid "Systémová deska (Kč/m²)"
+msgstr ""
+
+#: templates/admin-page.php:41
+msgid "Cena za m² pro systémovou desku s výstupky"
+msgstr ""
+
+#: templates/admin-page.php:49
+msgid "Příplatky za typ potrubí (%)"
+msgstr ""
+
+#: templates/admin-page.php:54
+msgid "PE trubka 17x2 (%)"
+msgstr ""
+
+#: templates/admin-page.php:62
+msgid "Procentuální navýšení ceny"
+msgstr ""
+
+#: templates/admin-page.php:135
+msgid "Obecné nastavení"
+msgstr ""
+
+#: templates/admin-page.php:140
+msgid "Maximální počet podlaží"
+msgstr ""
+
+#: templates/admin-page.php:148
+msgid "Kolik podlaží může zákazník maximálně přidat (0 = neomezeno)"
+msgstr ""
+
+#: templates/admin-page.php:153
+msgid "Email pro notifikace"
+msgstr ""
+
+#: templates/admin-page.php:161
+msgid "Email, na který budou zasílány žádosti o kontakt"
+msgstr ""
+
+#: templates/admin-page.php:166
+msgid "Název společnosti"
+msgstr ""
+
+#: templates/admin-page.php:174
+msgid "Název společnosti v emailech"
+msgstr ""
+
+#: templates/admin-page.php:181
+msgid "Vzhled kalkulačky"
+msgstr ""
+
+#: templates/admin-page.php:186
+msgid "Hlavní barva"
+msgstr ""
+
+#: templates/admin-page.php:194
+msgid "Hlavní barva kalkulačky"
+msgstr ""
+
+#: templates/admin-page.php:199
+msgid "Barva tlačítek"
+msgstr ""
+
+#: templates/admin-page.php:207
+msgid "Barva tlačítek a aktivních prvků"
+msgstr ""
+
+#: templates/admin-page.php:214
+msgid "Uložit nastavení"
+msgstr ""
+
+#: templates/admin-page.php:220
+msgid "Jak používat kalkulačku?"
+msgstr ""
+
+#: templates/admin-page.php:221
+msgid "Pro zobrazení kalkulačky na vašich stránkách použijte shortcode:"
+msgstr ""
+
+#: assets/js/calculator.js:150
+msgid "Maximální počet podlaží je"
+msgstr ""
+
+#: assets/js/calculator.js:280
+msgid "Prosím vyplňte platnou plochu pro podlaží"
+msgstr ""
+
+#: assets/js/calculator.js:285
+msgid "Prosím vyberte variantu instalace pro podlaží"
+msgstr ""
+
+#: assets/js/calculator.js:290
+msgid "Prosím vyberte typ potrubí pro podlaží"
+msgstr ""
+
+#: assets/js/calculator.js:295
+msgid "Prosím vyberte zdroj tepla pro první podlaží"
+msgstr ""
+
+#: assets/js/calculator.js:335
+msgid "Prosím vyplňte email"
+msgstr ""
+
+#: assets/js/calculator.js:341
+msgid "Prosím vyplňte platný email"
+msgstr ""
+
+#: assets/js/calculator.js:347
+msgid "Nejdříve prosím proveďte výpočet"
+msgstr ""
+
+#: assets/js/calculator.js:385
+msgid "Chyba při odesílání emailu. Zkuste to prosím znovu."
+msgstr ""
