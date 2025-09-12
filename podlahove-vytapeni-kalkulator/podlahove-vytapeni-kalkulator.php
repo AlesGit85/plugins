@@ -4,7 +4,7 @@
  * Plugin Name: Kalkulátor podlahového vytápění
  * Plugin URI: https://allimedia.cz/
  * Description: Plugin pro výpočet nákladů na realizaci podlahového vytápění s administračním rozhraním.
- * Version: 1.5.7
+ * Version: 1.5.8
  * Author: Allimedia.cz
  * Author URI: https://allimedia.cz/
  * Text Domain: podlahove-vytapeni
@@ -62,6 +62,7 @@ class PodlahoveVytapeniKalkulator
             'low_temp_source_price' => 5000,
             'high_temp_source_price' => 12000,
             'radiator_combo_price' => 12000,
+            'decimal_places' => 0,
             'max_floors' => 5,
             'admin_email' => get_option('admin_email'),
             'company_name' => get_option('blogname'),
@@ -86,7 +87,8 @@ class PodlahoveVytapeniKalkulator
 
         wp_localize_script('pv-calculator-script', 'pv_ajax', array(
             'ajax_url' => admin_url('admin-ajax.php'),
-            'nonce' => wp_create_nonce('pv_calculator_nonce')
+            'nonce' => wp_create_nonce('pv_calculator_nonce'),
+            'decimal_places' => intval($settings['decimal_places'] ?? 0)
         ));
     }
 
@@ -136,6 +138,7 @@ class PodlahoveVytapeniKalkulator
             'low_temp_source_price' => floatval($_POST['low_temp_source_price']),
             'high_temp_source_price' => floatval($_POST['high_temp_source_price']),
             'radiator_combo_price' => floatval($_POST['radiator_combo_price']),
+            'decimal_places' => intval($_POST['decimal_places']),
             'max_floors' => intval($_POST['max_floors']),
             'admin_email' => sanitize_email($_POST['admin_email']),
             'company_name' => sanitize_text_field($_POST['company_name']),
@@ -172,6 +175,7 @@ class PodlahoveVytapeniKalkulator
 
         $floors = json_decode(stripslashes($_POST['floors']), true);
         $settings = get_option('pv_settings');
+        $decimal_places = intval($settings['decimal_places'] ?? 0);
 
         $total_cost = 0;
         $calculation_details = array();
@@ -232,14 +236,14 @@ class PodlahoveVytapeniKalkulator
             $calculation_details[] = array(
                 'floor' => $index + 1,
                 'area' => $area,
-                'cost' => round($floor_cost, 2)
+                'cost' => round($floor_cost, $decimal_places)
             );
 
             $total_cost += $floor_cost;
         }
 
         wp_send_json_success(array(
-            'total_cost' => round($total_cost, 2),
+            'total_cost' => round($total_cost, $decimal_places),
             'details' => $calculation_details
         ));
     }

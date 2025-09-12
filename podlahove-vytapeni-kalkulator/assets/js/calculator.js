@@ -367,10 +367,12 @@ console.log('JavaScript načten:', new Date().getTime());
     }
 
     function formatPrice(price) {
+        const decimalPlaces = pv_ajax.decimal_places || 0;
+
         return new Intl.NumberFormat('cs-CZ', {
-            minimumFractionDigits: 0,
-            maximumFractionDigits: 0
-        }).format(Math.round(price));
+            minimumFractionDigits: decimalPlaces,
+            maximumFractionDigits: decimalPlaces
+        }).format(price);
     }
 
     function isValidEmail(email) {

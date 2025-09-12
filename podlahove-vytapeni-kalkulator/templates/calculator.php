@@ -56,11 +56,11 @@ if (!defined('ABSPATH')) {
                             <label>Typ potrubí</label>
                             <div class="pv-select-wrapper">
                                 <select name="pipe_type_1" class="pv-select">
-                                    <option value="pe_16x2">Polyethylenová trubka 16x2</option>
-                                    <option value="pe_17x2">Polyethylenová trubka 17x2</option>
-                                    <option value="pe_18x2">Polyethylenová trubka 18x2</option>
-                                    <option value="alu_16x2">Plastohliníková trubka 16x2</option>
-                                    <option value="alu_18x2">Plastohliníková trubka 18x2</option>
+                                    <option value="pe_16x2">16x2 polyethylenová trubka</option>
+                                    <option value="pe_17x2">17x2 polyethylenová trubka</option>
+                                    <option value="pe_18x2">18x2 polyethylenová trubka</option>
+                                    <option value="alu_16x2">16x2 plastohliníková trubka</option>
+                                    <option value="alu_18x2">18x2 plastohliníková trubka</option>
                                     <option value="advice">Nevím - nechám si poradit</option>
                                 </select>
                             </div>
@@ -204,11 +204,11 @@ if (!defined('ABSPATH')) {
                 <label for="pipe_type_{{floor_number}}">Typ potrubí</label>
                 <div class="pv-select-wrapper">
                     <select name="pipe_type_{{floor_number}}" id="pipe_type_{{floor_number}}" class="pv-select">
-                        <option value="pe_16x2">Polyethylenová trubka 16x2</option>
-                        <option value="pe_17x2">Polyethylenová trubka 17x2</option>
-                        <option value="pe_18x2">Polyethylenová trubka 18x2</option>
-                        <option value="alu_16x2">Plastohliníková trubka 16x2</option>
-                        <option value="alu_18x2">Plastohliníková trubka 18x2</option>
+                        <option value="pe_16x2">16x2 polyethylenová trubka</option>
+                        <option value="pe_17x2">17x2 polyethylenová trubka</option>
+                        <option value="pe_18x2">18x2 polyethylenová trubka</option>
+                        <option value="alu_16x2">16x2 plastohliníková trubka</option>
+                        <option value="alu_18x2">18x2 plastohliníková trubka</option>
                         <option value="advice">Nevím - nechám si poradit</option>
                     </select>
                 </div>

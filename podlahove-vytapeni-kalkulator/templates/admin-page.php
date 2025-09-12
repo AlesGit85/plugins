@@ -196,6 +196,19 @@ if (!defined('ABSPATH')) {
                                     <p class="description">Název společnosti v emailech</p>
                                 </td>
                             </tr>
+                            <tr>
+                                <th scope="row">
+                                    <label for="decimal_places">Počet desetinných míst</label>
+                                </th>
+                                <td>
+                                    <select id="decimal_places" name="decimal_places" class="regular-text">
+                                        <option value="0" <?php selected($settings['decimal_places'] ?? '0', '0'); ?>>Celá čísla (123 456 Kč)</option>
+                                        <option value="1" <?php selected($settings['decimal_places'] ?? '0', '1'); ?>>1 desetinné místo (123 456,5 Kč)</option>
+                                        <option value="2" <?php selected($settings['decimal_places'] ?? '0', '2'); ?>>2 desetinná místa (123 456,50 Kč)</option>
+                                    </select>
+                                    <p class="description">Jak zobrazovat ceny v kalkulačce</p>
+                                </td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>

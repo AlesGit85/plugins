@@ -776,4 +776,25 @@
     .pv-radio-content small {
         font-size: 0.75rem;
     }
+
+    /* Menší font v mobilních selectech */
+    @media (max-width: 768px) {
+        .pv-select {
+            font-size: 0.9rem;
+            padding: 0.75rem 2.25rem 0.75rem 0.75rem;
+            /* Menší padding vpravo pro šipku */
+            background-size: 1.25em 1.25em;
+            /* Menší šipka */
+            background-position: right 0.5rem center;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .pv-select {
+            font-size: 0.85rem;
+            padding: 0.75rem 2rem 0.75rem 0.65rem;
+            background-size: 1.1em 1.1em;
+            background-position: right 0.4rem center;
+        }
+    }
 }
