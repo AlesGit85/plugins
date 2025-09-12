@@ -130,15 +130,6 @@ Pro podporu kontaktujte:
 - Hooks pro vlastní úpravy
 - Modulární architektura
 
-🏷️ CHANGELOG
--------------
-v1.0.0 (2025-09-04)
-- První vydání pluginu
-- Základní funkcionalita kalkulace
-- Administrační rozhraní
-- Email notifikace
-- Responzivní design
-
 🔮 PLÁNOVANÉ FUNKCE
 ------------------
 - Export do PDF

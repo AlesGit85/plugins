@@ -21,7 +21,7 @@ if (!defined('ABSPATH')) {
                             <label for="area_1">Plocha (m²)</label>
                             <div class="pv-area-control">
                                 <button type="button" class="pv-area-btn pv-area-minus" data-target="area_1">-</button>
-                                <input type="number" id="area_1" name="area[]" min="1" step="0.1" value="50" class="pv-area-input">
+                                <input type="number" id="area_1" name="area[]" min="1" step="1" value="50" class="pv-area-input">
                                 <button type="button" class="pv-area-btn pv-area-plus" data-target="area_1">+</button>
                             </div>
                         </div>
@@ -36,7 +36,7 @@ if (!defined('ABSPATH')) {
                                     <span class="pv-radio-custom"></span>
                                     <div class="pv-radio-content">
                                         <strong>Tacker systém</strong>
-                                        <small>Instalace na folii - <?php echo number_format($settings['tacker_system_price'], 0, ',', ' '); ?> Kč/m²</small>
+                                        <small>Instalace na folii</small>
                                     </div>
                                 </label>
                                 <label class="pv-radio-option">
@@ -44,7 +44,7 @@ if (!defined('ABSPATH')) {
                                     <span class="pv-radio-custom"></span>
                                     <div class="pv-radio-content">
                                         <strong>Systémová deska</strong>
-                                        <small>S výstupky - <?php echo number_format($settings['system_board_price'], 0, ',', ' '); ?> Kč/m²</small>
+                                        <small>S výstupky</small>
                                     </div>
                                 </label>
                             </div>
@@ -56,12 +56,12 @@ if (!defined('ABSPATH')) {
                             <label>Typ potrubí</label>
                             <div class="pv-select-wrapper">
                                 <select name="pipe_type_1" class="pv-select">
-                                    <option value="pe_16x2">Polyethylenová trubka 16x2 (bez příplatku)</option>
-                                    <option value="pe_17x2">Polyethylenová trubka 17x2 (+<?php echo $settings['pipe_17x2_increase']; ?>%)</option>
-                                    <option value="pe_18x2">Polyethylenová trubka 18x2 (+<?php echo $settings['pipe_18x2_increase']; ?>%)</option>
-                                    <option value="alu_16x2">Plastohliníková trubka 16x2 (+<?php echo $settings['pipe_alu_16x2_increase']; ?>%)</option>
-                                    <option value="alu_18x2">Plastohliníková trubka 18x2 (+<?php echo $settings['pipe_alu_18x2_increase']; ?>%)</option>
-                                    <option value="advice">Nevím - nechám si poradit (bez příplatku)</option>
+                                    <option value="pe_16x2">Polyethylenová trubka 16x2</option>
+                                    <option value="pe_17x2">Polyethylenová trubka 17x2</option>
+                                    <option value="pe_18x2">Polyethylenová trubka 18x2</option>
+                                    <option value="alu_16x2">Plastohliníková trubka 16x2</option>
+                                    <option value="alu_18x2">Plastohliníková trubka 18x2</option>
+                                    <option value="advice">Nevím - nechám si poradit</option>
                                 </select>
                             </div>
                         </div>
@@ -72,9 +72,9 @@ if (!defined('ABSPATH')) {
                             <label>Zdroj tepla</label>
                             <div class="pv-select-wrapper">
                                 <select name="heat_source_1" class="pv-select">
-                                    <option value="low_temp">Nízkoteplotní (+<?php echo number_format($settings['low_temp_source_price'], 0, ',', ' '); ?> Kč)</option>
-                                    <option value="high_temp">Vysokoteplotní (+<?php echo number_format($settings['high_temp_source_price'], 0, ',', ' '); ?> Kč)</option>
-                                    <option value="radiator_combo">Kombinace s radiátory (+<?php echo number_format($settings['radiator_combo_price'], 0, ',', ' '); ?> Kč)</option>
+                                    <option value="low_temp">Nízkoteplotní</option>
+                                    <option value="high_temp">Vysokoteplotní</option>
+                                    <option value="radiator_combo">Kombinace s radiátory</option>
                                 </select>
                             </div>
                         </div>
@@ -95,7 +95,7 @@ if (!defined('ABSPATH')) {
                 
                 <div id="pv-result" class="pv-result" style="display: none;">
                     <div class="pv-result-header">
-                        <h3>Orientační cena realizace</h3>
+                        <h3>Orientační cena systému</h3>
                     </div>
                     
                     <div id="pv-result-details" class="pv-result-details"></div>
@@ -169,7 +169,7 @@ if (!defined('ABSPATH')) {
                 <label for="area_{{floor_number}}">Plocha (m²)</label>
                 <div class="pv-area-control">
                     <button type="button" class="pv-area-btn pv-area-minus" data-target="area_{{floor_number}}">-</button>
-                    <input type="number" id="area_{{floor_number}}" name="area[]" min="1" step="0.1" value="50" class="pv-area-input">
+                    <input type="number" id="area_{{floor_number}}" name="area[]" min="1" step="1" value="50" class="pv-area-input">
                     <button type="button" class="pv-area-btn pv-area-plus" data-target="area_{{floor_number}}">+</button>
                 </div>
             </div>
@@ -184,7 +184,7 @@ if (!defined('ABSPATH')) {
                         <span class="pv-radio-custom"></span>
                         <div class="pv-radio-content">
                             <strong>Tacker systém</strong>
-                            <small>Instalace na folii - <?php echo number_format($settings['tacker_system_price'], 0, ',', ' '); ?> Kč/m²</small>
+                            <small>Instalace na folii</small>
                         </div>
                     </label>
                     <label class="pv-radio-option">
@@ -192,7 +192,7 @@ if (!defined('ABSPATH')) {
                         <span class="pv-radio-custom"></span>
                         <div class="pv-radio-content">
                             <strong>Systémová deska</strong>
-                            <small>S výstupky - <?php echo number_format($settings['system_board_price'], 0, ',', ' '); ?> Kč/m²</small>
+                            <small>S výstupky</small>
                         </div>
                     </label>
                 </div>
@@ -201,15 +201,15 @@ if (!defined('ABSPATH')) {
         
         <div class="pv-form-row">
             <div class="pv-form-group">
-                <label>Typ potrubí</label>
+                <label for="pipe_type_{{floor_number}}">Typ potrubí</label>
                 <div class="pv-select-wrapper">
-                    <select name="pipe_type_{{floor_number}}" class="pv-select">
-                        <option value="pe_16x2">Polyethylenová trubka 16x2 (bez příplatku)</option>
-                        <option value="pe_17x2">Polyethylenová trubka 17x2 (+<?php echo $settings['pipe_17x2_increase']; ?>%)</option>
-                        <option value="pe_18x2">Polyethylenová trubka 18x2 (+<?php echo $settings['pipe_18x2_increase']; ?>%)</option>
-                        <option value="alu_16x2">Plastohliníková trubka 16x2 (+<?php echo $settings['pipe_alu_16x2_increase']; ?>%)</option>
-                        <option value="alu_18x2">Plastohliníková trubka 18x2 (+<?php echo $settings['pipe_alu_18x2_increase']; ?>%)</option>
-                        <option value="advice">Nevím - nechám si poradit (bez příplatku)</option>
+                    <select name="pipe_type_{{floor_number}}" id="pipe_type_{{floor_number}}" class="pv-select">
+                        <option value="pe_16x2">Polyethylenová trubka 16x2</option>
+                        <option value="pe_17x2">Polyethylenová trubka 17x2</option>
+                        <option value="pe_18x2">Polyethylenová trubka 18x2</option>
+                        <option value="alu_16x2">Plastohliníková trubka 16x2</option>
+                        <option value="alu_18x2">Plastohliníková trubka 18x2</option>
+                        <option value="advice">Nevím - nechám si poradit</option>
                     </select>
                 </div>
             </div>
@@ -217,10 +217,10 @@ if (!defined('ABSPATH')) {
         
         <div class="pv-form-row">
             <div class="pv-form-group">
-                <label>Zdroj tepla</label>
+                <label for="heat_source_{{floor_number}}">Zdroj tepla</label>
                 <div class="pv-select-wrapper">
-                    <select name="heat_source_{{floor_number}}" class="pv-select">
-                        <option value="">Bez příplatku (použije se z 1. podlaží)</option>
+                    <select name="heat_source_{{floor_number}}" id="heat_source_{{floor_number}}" class="pv-select">
+                        <option value="">Použije se dle 1. podlaží</option>
                     </select>
                 </div>
             </div>
