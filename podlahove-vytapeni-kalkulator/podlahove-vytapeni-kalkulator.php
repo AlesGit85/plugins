@@ -4,7 +4,7 @@
  * Plugin Name: Kalkulátor podlahového vytápění
  * Plugin URI: https://allimedia.cz/
  * Description: Plugin pro výpočet nákladů na realizaci podlahového vytápění s administračním rozhraním.
- * Version: 1.5.8
+ * Version: 1.5.9
  * Author: Allimedia.cz
  * Author URI: https://allimedia.cz/
  * Text Domain: podlahove-vytapeni
@@ -84,6 +84,8 @@ class PodlahoveVytapeniKalkulator
 
         wp_enqueue_style('pv-calculator-style', PV_PLUGIN_URL . 'assets/css/calculator.css', array(), PV_VERSION);
         wp_enqueue_script('pv-calculator-script', PV_PLUGIN_URL . 'assets/js/calculator.js', array('jquery'), PV_VERSION, true);
+
+        $settings = get_option('pv_settings');
 
         wp_localize_script('pv-calculator-script', 'pv_ajax', array(
             'ajax_url' => admin_url('admin-ajax.php'),
