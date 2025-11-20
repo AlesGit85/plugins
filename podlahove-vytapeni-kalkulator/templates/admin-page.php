@@ -9,7 +9,7 @@ if (!defined('ABSPATH')) {
 
     <div class="pv-admin-container">
         <div class="pv-admin-main">
-            <form method="post" action="">
+            <form method="post" action="" enctype="multipart/form-data">
                 <?php wp_nonce_field('pv_settings_nonce'); ?>
 
                 <div class="pv-settings-section">
@@ -214,6 +214,68 @@ if (!defined('ABSPATH')) {
                 </div>
 
                 <div class="pv-settings-section">
+                    <h2>Vlastní fonty</h2>
+                    <table class="form-table">
+                        <tbody>
+                            <tr>
+                                <th scope="row">
+                                    <label for="custom_font_upload">Nahrát vlastní font</label>
+                                </th>
+                                <td>
+                                    <input type="file" 
+                                           id="custom_font_upload" 
+                                           name="custom_font_upload" 
+                                           accept=".woff,.woff2,.ttf,.otf"
+                                           class="regular-text" />
+                                    <p class="description">Podporované formáty: WOFF, WOFF2, TTF, OTF (doporučeno WOFF2)</p>
+                                    
+                                    <?php if (!empty($settings['uploaded_fonts'])): ?>
+                                        <h4>Nahrané fonty:</h4>
+                                        <div class="pv-uploaded-fonts">
+                                            <?php foreach ($settings['uploaded_fonts'] as $font_key => $font_info): ?>
+                                                <div class="pv-font-item">
+                                                    <span class="pv-font-name"><?php echo esc_html($font_info['name']); ?></span>
+                                                    <button type="button" 
+                                                            class="button button-small pv-delete-font" 
+                                                            data-font-key="<?php echo esc_attr($font_key); ?>">
+                                                        Smazat
+                                                    </button>
+                                                </div>
+                                            <?php endforeach; ?>
+                                        </div>
+                                    <?php endif; ?>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th scope="row">
+                                    <label for="selected_font">Aktivní font</label>
+                                </th>
+                                <td>
+                                    <select id="selected_font" name="selected_font" class="regular-text">
+                                        <option value="default" <?php selected($settings['selected_font'] ?? 'default', 'default'); ?>>
+                                            Výchozí (systémový)
+                                        </option>
+                                        <?php if (!empty($settings['uploaded_fonts'])): ?>
+                                            <?php foreach ($settings['uploaded_fonts'] as $font_key => $font_info): ?>
+                                                <option value="<?php echo esc_attr($font_key); ?>" 
+                                                        <?php selected($settings['selected_font'] ?? 'default', $font_key); ?>>
+                                                    <?php echo esc_html($font_info['name']); ?>
+                                                </option>
+                                            <?php endforeach; ?>
+                                        <?php endif; ?>
+                                    </select>
+                                    <p class="description">Vyberte font, který se použije v kalkulačce</p>
+                                    
+                                    <div id="font-preview" class="pv-font-preview">
+                                        <p>Náhled fontu: Kalkulátor podlahového vytápění 1234567890</p>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="pv-settings-section">
                     <h2>Vzhled kalkulačky</h2>
                     <table class="form-table">
                         <tbody>
@@ -323,7 +385,18 @@ if (!defined('ABSPATH')) {
                     <li>✓ Sběr kontaktních údajů</li>
                     <li>✓ Automatické odesílání emailů</li>
                     <li>✓ Plně přizpůsobitelný design</li>
+                    <li>✓ Vlastní fonty</li>
                 </ul>
+            </div>
+
+            <div class="pv-info-box">
+                <h3>📝 Tipy pro fonty</h3>
+                <ul>
+                    <li><strong>WOFF2</strong> - nejlepší komprese a podpora</li>
+                    <li><strong>WOFF</strong> - starší podpora prohlížečů</li>
+                    <li><strong>TTF/OTF</strong> - původní formáty</li>
+                </ul>
+                <p>Doporučená velikost fontů: maximálně 200KB pro rychlé načítání.</p>
             </div>
         </div>
     </div>

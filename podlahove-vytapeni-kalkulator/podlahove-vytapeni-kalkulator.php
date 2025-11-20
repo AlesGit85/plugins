@@ -4,7 +4,7 @@
  * Plugin Name: Kalkulátor podlahového vytápění
  * Plugin URI: https://allimedia.cz/
  * Description: Plugin pro výpočet nákladů na realizaci podlahového vytápění s administračním rozhraním.
- * Version: 1.5.9
+ * Version: 1.6.2
  * Author: Allimedia.cz
  * Author URI: https://allimedia.cz/
  * Text Domain: podlahove-vytapeni
@@ -21,7 +21,7 @@ if (!defined('ABSPATH')) {
 // Definice konstant
 define('PV_PLUGIN_URL', plugin_dir_url(__FILE__));
 define('PV_PLUGIN_PATH', plugin_dir_path(__FILE__));
-define('PV_VERSION', '1.0.0');
+define('PV_VERSION', '1.6.0');
 
 class PodlahoveVytapeniKalkulator
 {
@@ -36,6 +36,9 @@ class PodlahoveVytapeniKalkulator
 
         register_activation_hook(__FILE__, array($this, 'activate'));
         register_deactivation_hook(__FILE__, array($this, 'deactivate'));
+
+        // Vytvoření upload složky pro fonty při aktivaci
+        add_action('wp_loaded', array($this, 'create_font_upload_dir'));
     }
 
     public function init()
@@ -47,6 +50,13 @@ class PodlahoveVytapeniKalkulator
         add_action('wp_ajax_nopriv_calculate_heating', array($this, 'ajax_calculate_heating'));
         add_action('wp_ajax_send_calculation_email', array($this, 'ajax_send_calculation_email'));
         add_action('wp_ajax_nopriv_send_calculation_email', array($this, 'ajax_send_calculation_email'));
+        
+        // Nové AJAX akce pro fonty
+        add_action('wp_ajax_pv_delete_font', array($this, 'ajax_delete_font'));
+        add_action('wp_ajax_pv_preview_font', array($this, 'ajax_preview_font'));
+
+        // Hook pro generování custom CSS
+        add_action('wp_head', array($this, 'output_custom_css'));
     }
 
     public function activate()
@@ -67,15 +77,41 @@ class PodlahoveVytapeniKalkulator
             'admin_email' => get_option('admin_email'),
             'company_name' => get_option('blogname'),
             'primary_color' => '#0073aa',
-            'button_color' => '#00a32a'
+            'button_color' => '#00a32a',
+            'uploaded_fonts' => array(),
+            'selected_font' => 'default'
         );
 
         add_option('pv_settings', $default_settings);
+        $this->create_font_upload_dir();
     }
 
     public function deactivate()
     {
         // Cleanup pokud je potřeba
+    }
+
+    public function create_font_upload_dir()
+    {
+        $upload_dir = wp_upload_dir();
+        $font_dir = $upload_dir['basedir'] . '/pv-fonts';
+        
+        if (!file_exists($font_dir)) {
+            wp_mkdir_p($font_dir);
+            
+            /*
+            // Vytvoření .htaccess pro bezpečnost
+            $htaccess_content = "# Povolit pouze font soubory\n";
+            $htaccess_content .= "<FilesMatch \"\\.(woff|woff2|ttf|otf)$\">\n";
+            $htaccess_content .= "    Allow from all\n";
+            $htaccess_content .= "</FilesMatch>\n";
+            $htaccess_content .= "<FilesMatch \"\\.(php|js|html)$\">\n";
+            $htaccess_content .= "    Deny from all\n";
+            $htaccess_content .= "</FilesMatch>\n";
+            
+            file_put_contents($font_dir . '/.htaccess', $htaccess_content);
+            */
+        }
     }
 
     public function enqueue_scripts()
@@ -102,6 +138,12 @@ class PodlahoveVytapeniKalkulator
         wp_enqueue_script('wp-color-picker');
         wp_enqueue_style('pv-admin-style', PV_PLUGIN_URL . 'assets/css/admin.css', array(), PV_VERSION);
         wp_enqueue_script('pv-admin-script', PV_PLUGIN_URL . 'assets/js/admin.js', array('jquery', 'wp-color-picker'), PV_VERSION, true);
+        
+        // Localize script pro font handling
+        wp_localize_script('pv-admin-script', 'pv_admin_ajax', array(
+            'ajax_url' => admin_url('admin-ajax.php'),
+            'nonce' => wp_create_nonce('pv_admin_nonce'),
+        ));
     }
 
     public function admin_menu()
@@ -149,13 +191,163 @@ class PodlahoveVytapeniKalkulator
             'button_text_color' => sanitize_hex_color($_POST['button_text_color']),
             'button_hover_color' => sanitize_hex_color($_POST['button_hover_color']),
             'button_hover_text_color' => sanitize_hex_color($_POST['button_hover_text_color']),
-            'hover_background' => sanitize_hex_color($_POST['hover_background'])
+            'hover_background' => sanitize_hex_color($_POST['hover_background']),
+            'selected_font' => sanitize_text_field($_POST['selected_font'])
         );
+
+        // Zachovat existující fonty
+        $old_settings = get_option('pv_settings');
+        $settings['uploaded_fonts'] = $old_settings['uploaded_fonts'] ?? array();
+
+        // Handling file upload
+        if (!empty($_FILES['custom_font_upload']['name'])) {
+            $uploaded_font = $this->handle_font_upload($_FILES['custom_font_upload']);
+            if ($uploaded_font) {
+                $font_key = sanitize_title(pathinfo($_FILES['custom_font_upload']['name'], PATHINFO_FILENAME));
+                $font_key = $font_key . '_' . time(); // Přidat timestamp pro unikátnost
+                
+                $settings['uploaded_fonts'][$font_key] = $uploaded_font;
+            }
+        }
 
         update_option('pv_settings', $settings);
         add_action('admin_notices', function () {
             echo '<div class="notice notice-success is-dismissible"><p>Nastavení bylo úspěšně uloženo!</p></div>';
         });
+    }
+
+    private function handle_font_upload($file)
+    {
+        if ($file['error'] !== UPLOAD_ERR_OK) {
+            add_action('admin_notices', function () {
+                echo '<div class="notice notice-error is-dismissible"><p>Chyba při nahrávání fontu.</p></div>';
+            });
+            return false;
+        }
+
+        // Validace typu souboru
+        $allowed_types = array('woff', 'woff2', 'ttf', 'otf');
+        $file_extension = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
+        
+        if (!in_array($file_extension, $allowed_types)) {
+            add_action('admin_notices', function () {
+                echo '<div class="notice notice-error is-dismissible"><p>Nepodporovaný formát fontu. Použijte WOFF, WOFF2, TTF nebo OTF.</p></div>';
+            });
+            return false;
+        }
+
+        // Validace velikosti (max 2MB)
+        if ($file['size'] > 2 * 1024 * 1024) {
+            add_action('admin_notices', function () {
+                echo '<div class="notice notice-error is-dismissible"><p>Font je příliš velký. Maximální velikost je 2MB.</p></div>';
+            });
+            return false;
+        }
+
+        // Přesun souboru do upload složky
+        $upload_dir = wp_upload_dir();
+        $font_dir = $upload_dir['basedir'] . '/pv-fonts';
+        
+        $sanitized_filename = sanitize_file_name($file['name']);
+        $target_path = $font_dir . '/' . $sanitized_filename;
+        
+        // Pokud soubor existuje, přidat timestamp
+        if (file_exists($target_path)) {
+            $pathinfo = pathinfo($sanitized_filename);
+            $sanitized_filename = $pathinfo['filename'] . '_' . time() . '.' . $pathinfo['extension'];
+            $target_path = $font_dir . '/' . $sanitized_filename;
+        }
+
+        if (move_uploaded_file($file['tmp_name'], $target_path)) {
+            return array(
+                'name' => pathinfo($file['name'], PATHINFO_FILENAME),
+                'filename' => $sanitized_filename,
+                'url' => $upload_dir['baseurl'] . '/pv-fonts/' . $sanitized_filename,
+                'path' => $target_path,
+                'format' => $this->get_font_format($file_extension)
+            );
+        }
+
+        add_action('admin_notices', function () {
+            echo '<div class="notice notice-error is-dismissible"><p>Nepodařilo se nahrát font.</p></div>';
+        });
+        return false;
+    }
+
+    private function get_font_format($extension)
+    {
+        $formats = array(
+            'woff2' => 'woff2',
+            'woff' => 'woff',
+            'ttf' => 'truetype',
+            'otf' => 'opentype'
+        );
+        return $formats[$extension] ?? 'truetype';
+    }
+
+    public function ajax_delete_font()
+    {
+        check_ajax_referer('pv_admin_nonce', 'nonce');
+        
+        if (!current_user_can('manage_options')) {
+            wp_send_json_error('Nemáte oprávnění');
+        }
+
+        $font_key = sanitize_text_field($_POST['font_key']);
+        $settings = get_option('pv_settings');
+        
+        if (isset($settings['uploaded_fonts'][$font_key])) {
+            $font_info = $settings['uploaded_fonts'][$font_key];
+            
+            // Smazat soubor z disku
+            if (file_exists($font_info['path'])) {
+                unlink($font_info['path']);
+            }
+            
+            // Odebrat z nastavení
+            unset($settings['uploaded_fonts'][$font_key]);
+            
+            // Pokud byl odstraněný font aktivní, nastavit default
+            if ($settings['selected_font'] === $font_key) {
+                $settings['selected_font'] = 'default';
+            }
+            
+            update_option('pv_settings', $settings);
+            
+            wp_send_json_success('Font byl úspěšně odstraněn');
+        }
+        
+        wp_send_json_error('Font nebyl nalezen');
+    }
+
+    public function output_custom_css()
+    {
+        $settings = get_option('pv_settings');
+        
+        echo '<style id="pv-custom-styles">';
+        
+        // Font styles
+        if (!empty($settings['uploaded_fonts']) && $settings['selected_font'] !== 'default') {
+            foreach ($settings['uploaded_fonts'] as $font_key => $font_info) {
+                echo "@font-face {\n";
+                echo "    font-family: 'pv-custom-{$font_key}';\n";
+                echo "    src: url('{$font_info['url']}') format('{$font_info['format']}');\n";
+                echo "    font-display: swap;\n";
+                echo "}\n";
+            }
+            
+            // Aplikovat vybraný font
+            if (isset($settings['uploaded_fonts'][$settings['selected_font']])) {
+                echo ".pv-calculator {\n";
+                echo "    font-family: 'pv-custom-{$settings['selected_font']}', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;\n";
+                echo "}\n";
+                echo ".pv-calculator * {\n";
+                echo "    font-family: inherit !important;\n";
+                echo "}\n";
+            }
+        }
+        
+        echo '</style>';
     }
 
     public function render_calculator($atts)

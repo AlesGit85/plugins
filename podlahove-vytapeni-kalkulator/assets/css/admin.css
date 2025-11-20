@@ -1,4 +1,4 @@
-/* Administrace kalkulátoru podlahového vytápění */
+/* Administrace kalkulátoru podlahového vytápění s podporou fontů */
 
 .pv-admin-container {
     display: flex;
@@ -107,10 +107,208 @@
     line-height: 1.4;
 }
 
+/* Styly pro fonty */
+.pv-uploaded-fonts {
+    margin-top: 15px;
+    padding: 15px;
+    background: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.pv-font-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 15px;
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    margin-bottom: 10px;
+    transition: all 0.2s ease;
+}
+
+.pv-font-item:last-child {
+    margin-bottom: 0;
+}
+
+.pv-font-item:hover {
+    border-color: #0073aa;
+    box-shadow: 0 2px 8px rgba(0, 115, 170, 0.1);
+}
+
+.pv-font-name {
+    font-weight: 600;
+    color: #333;
+    font-size: 14px;
+    flex: 1;
+    margin-right: 15px;
+    word-break: break-word;
+}
+
+.pv-delete-font {
+    background: #dc3232 !important;
+    border-color: #dc3232 !important;
+    color: white !important;
+    font-size: 12px;
+    padding: 4px 12px;
+    height: auto;
+    line-height: 1.4;
+    transition: all 0.2s ease;
+}
+
+.pv-delete-font:hover {
+    background: #c32626 !important;
+    border-color: #c32626 !important;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 6px rgba(195, 38, 38, 0.3);
+}
+
+.pv-delete-font:active {
+    transform: translateY(0);
+}
+
+.pv-delete-font:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none !important;
+    box-shadow: none !important;
+}
+
+.pv-font-preview {
+    margin-top: 20px;
+    padding: 20px;
+    background: linear-gradient(135deg, #f0f8ff 0%, #e6f3ff 100%);
+    border: 1px solid #b3d9ff;
+    border-radius: 8px;
+    position: relative;
+    overflow: hidden;
+}
+
+.pv-font-preview::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 4px;
+    height: 100%;
+    background: #0073aa;
+}
+
+.pv-font-preview p {
+    margin: 0;
+    font-size: 18px;
+    line-height: 1.6;
+    color: #333;
+    word-break: break-word;
+    padding-left: 15px;
+    transition: font-family 0.3s ease;
+}
+
+.pv-font-preview small {
+    display: block;
+    margin-top: 8px;
+    font-size: 12px;
+    font-weight: 600;
+    padding-left: 15px;
+}
+
+/* Font upload styling */
+#custom_font_upload {
+    padding: 12px 15px;
+    border: 2px dashed #ddd;
+    background: #fafafa;
+    border-radius: 8px;
+    width: 100%;
+    max-width: 500px;
+    font-size: 14px;
+    color: #666;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+#custom_font_upload:hover {
+    border-color: #0073aa;
+    background: #f0f8ff;
+    color: #0073aa;
+}
+
+#custom_font_upload:focus {
+    outline: none;
+    border-color: #0073aa;
+    background: #f0f8ff;
+    box-shadow: 0 0 0 2px rgba(0, 115, 170, 0.2);
+}
+
+/* Select styling pro fonty */
+#selected_font {
+    width: 100%;
+    max-width: 400px;
+    padding: 8px 12px;
+    font-size: 14px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background: white;
+}
+
+#selected_font:focus {
+    border-color: #0073aa;
+    box-shadow: 0 0 0 2px rgba(0, 115, 170, 0.2);
+    outline: none;
+}
+
+/* Error states */
+.pv-admin-container input.error,
+.pv-admin-container select.error {
+    border-color: #dc3232 !important;
+    box-shadow: 0 0 0 2px rgba(220, 50, 50, 0.2) !important;
+}
+
+.pv-admin-container input.auto-saved,
+.pv-admin-container select.auto-saved {
+    border-color: #46b450 !important;
+    box-shadow: 0 0 0 2px rgba(70, 180, 80, 0.2) !important;
+}
+
+/* Hover effects */
+.pv-admin-container .form-table tr:hover {
+    background: rgba(240, 248, 255, 0.5);
+    transition: background 0.2s ease;
+}
+
+/* Animations */
+@keyframes pulse {
+    0% { opacity: 1; }
+    50% { opacity: 0.7; }
+    100% { opacity: 1; }
+}
+
+.pv-admin-container .auto-saved {
+    animation: pulse 0.8s ease-in-out;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.notice {
+    animation: slideIn 0.3s ease-out;
+}
+
 /* Responzivní layout pro mobily */
 @media (max-width: 782px) {
     .pv-admin-container {
         flex-direction: column;
+        gap: 1rem;
     }
     
     .pv-admin-sidebar {
@@ -132,18 +330,95 @@
     
     .pv-settings-section .form-table th {
         padding-bottom: 0.5rem;
+        border-bottom: none;
     }
     
     .pv-settings-section .form-table td {
         padding-top: 0;
-        padding-bottom: 1rem;
+        padding-bottom: 1.5rem;
+        border-bottom: 1px solid #f0f0f0;
+    }
+
+    .pv-font-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+    
+    .pv-font-name {
+        margin-right: 0;
+        margin-bottom: 5px;
+    }
+    
+    .pv-delete-font {
+        align-self: flex-end;
+        width: auto;
+    }
+    
+    .pv-font-preview p {
+        font-size: 16px;
+        padding-left: 10px;
+    }
+    
+    .pv-font-preview small {
+        padding-left: 10px;
+    }
+    
+    #custom_font_upload {
+        max-width: none;
+    }
+    
+    #selected_font {
+        max-width: none;
+    }
+}
+
+/* Velmi malé obrazovky */
+@media (max-width: 480px) {
+    .pv-admin-container {
+        margin: 0.5rem 0;
+    }
+    
+    .pv-settings-section h2 {
+        padding: 0.75rem 1rem;
+        font-size: 1rem;
+    }
+    
+    .pv-settings-section .form-table th,
+    .pv-settings-section .form-table td {
+        padding-left: 0.75rem;
+        padding-right: 0.75rem;
+    }
+    
+    .pv-info-box {
+        padding: 1rem;
+    }
+    
+    .pv-uploaded-fonts {
+        padding: 10px;
+        margin-top: 10px;
+    }
+    
+    .pv-font-item {
+        padding: 10px;
+    }
+    
+    .pv-font-preview {
+        padding: 15px;
+        margin-top: 15px;
+    }
+    
+    .pv-font-preview p {
+        font-size: 14px;
+        line-height: 1.5;
     }
 }
 
 /* Vylepšení pro WordPress admin */
 .pv-settings-section input[type="number"],
 .pv-settings-section input[type="email"],
-.pv-settings-section input[type="text"] {
+.pv-settings-section input[type="text"],
+.pv-settings-section select {
     width: 100%;
     max-width: 300px;
 }
@@ -152,14 +427,57 @@
     font-style: italic;
     color: #666;
     margin-top: 0.25rem;
-}
-
-/* Highlight pro důležité nastavení */
-.pv-settings-section tr:hover {
-    background: #fafafa;
+    font-size: 13px;
 }
 
 /* Success notice styling */
 .pv-admin-container .notice {
     margin: 0 0 1rem 0;
+    border-radius: 4px;
+}
+
+/* Scrollbar styling pro font list */
+.pv-uploaded-fonts::-webkit-scrollbar {
+    width: 6px;
+}
+
+.pv-uploaded-fonts::-webkit-scrollbar-track {
+    background: #f0f0f0;
+    border-radius: 3px;
+}
+
+.pv-uploaded-fonts::-webkit-scrollbar-thumb {
+    background: #ccc;
+    border-radius: 3px;
+}
+
+.pv-uploaded-fonts::-webkit-scrollbar-thumb:hover {
+    background: #aaa;
+}
+
+/* Font format indicators */
+.pv-font-format {
+    font-size: 11px;
+    background: #e1f5fe;
+    color: #0277bd;
+    padding: 2px 6px;
+    border-radius: 3px;
+    margin-left: 8px;
+    font-weight: 500;
+}
+
+.pv-font-format.woff2 {
+    background: #e8f5e8;
+    color: #2e7d32;
+}
+
+.pv-font-format.woff {
+    background: #fff3e0;
+    color: #ef6c00;
+}
+
+.pv-font-format.ttf,
+.pv-font-format.otf {
+    background: #fce4ec;
+    color: #c2185b;
 }
