@@ -3,8 +3,8 @@
 /**
  * Plugin Name: Kalkulátor podlahového vytápění
  * Plugin URI: https://allimedia.cz/
- * Description: Plugin pro výpočet nákladů na realizaci podlahového vytápění s administračním rozhraním.
- * Version: 1.6.2
+ * Description: Plugin pro výpočet nákladů na realizaci podlahového vytápění s administračním rozhraním a pokročilou font customizací.
+ * Version: 1.7.0
  * Author: Allimedia.cz
  * Author URI: https://allimedia.cz/
  * Text Domain: podlahove-vytapeni
@@ -21,7 +21,7 @@ if (!defined('ABSPATH')) {
 // Definice konstant
 define('PV_PLUGIN_URL', plugin_dir_url(__FILE__));
 define('PV_PLUGIN_PATH', plugin_dir_path(__FILE__));
-define('PV_VERSION', '1.6.0');
+define('PV_VERSION', '1.7.0');
 
 class PodlahoveVytapeniKalkulator
 {
@@ -51,7 +51,7 @@ class PodlahoveVytapeniKalkulator
         add_action('wp_ajax_send_calculation_email', array($this, 'ajax_send_calculation_email'));
         add_action('wp_ajax_nopriv_send_calculation_email', array($this, 'ajax_send_calculation_email'));
         
-        // Nové AJAX akce pro fonty
+        // AJAX akce pro fonty
         add_action('wp_ajax_pv_delete_font', array($this, 'ajax_delete_font'));
         add_action('wp_ajax_pv_preview_font', array($this, 'ajax_preview_font'));
 
@@ -61,7 +61,7 @@ class PodlahoveVytapeniKalkulator
 
     public function activate()
     {
-        // Vytvoření default nastavení
+        // Vytvoření default nastavení s rozšířenými font možnostmi
         $default_settings = array(
             'tacker_system_price' => 200,
             'system_board_price' => 450,
@@ -78,8 +78,22 @@ class PodlahoveVytapeniKalkulator
             'company_name' => get_option('blogname'),
             'primary_color' => '#0073aa',
             'button_color' => '#00a32a',
+            'button_text_color' => '#ffffff',
+            'button_hover_color' => '#008a2e',
+            'button_hover_text_color' => '#ffffff',
+            'hover_background' => '#f0f8ff',
+            
+            // Font nastavení
             'uploaded_fonts' => array(),
-            'selected_font' => 'default'
+            'selected_font' => 'default',
+            
+            // Font velikosti a váhy
+            'heading_font_size' => 20,
+            'heading_font_weight' => 600,
+            'label_font_size' => 14,
+            'label_font_weight' => 600,
+            'button_font_size' => 16,
+            'button_font_weight' => 600
         );
 
         add_option('pv_settings', $default_settings);
@@ -99,8 +113,7 @@ class PodlahoveVytapeniKalkulator
         if (!file_exists($font_dir)) {
             wp_mkdir_p($font_dir);
             
-            /*
-            // Vytvoření .htaccess pro bezpečnost
+            // Vytvoření .htaccess pro bezpečnost (volitelné)
             $htaccess_content = "# Povolit pouze font soubory\n";
             $htaccess_content .= "<FilesMatch \"\\.(woff|woff2|ttf|otf)$\">\n";
             $htaccess_content .= "    Allow from all\n";
@@ -110,7 +123,6 @@ class PodlahoveVytapeniKalkulator
             $htaccess_content .= "</FilesMatch>\n";
             
             file_put_contents($font_dir . '/.htaccess', $htaccess_content);
-            */
         }
     }
 
@@ -192,7 +204,15 @@ class PodlahoveVytapeniKalkulator
             'button_hover_color' => sanitize_hex_color($_POST['button_hover_color']),
             'button_hover_text_color' => sanitize_hex_color($_POST['button_hover_text_color']),
             'hover_background' => sanitize_hex_color($_POST['hover_background']),
-            'selected_font' => sanitize_text_field($_POST['selected_font'])
+            'selected_font' => sanitize_text_field($_POST['selected_font']),
+            
+            // Font velikosti a váhy
+            'heading_font_size' => intval($_POST['heading_font_size']),
+            'heading_font_weight' => intval($_POST['heading_font_weight']),
+            'label_font_size' => intval($_POST['label_font_size']),
+            'label_font_weight' => intval($_POST['label_font_weight']),
+            'button_font_size' => intval($_POST['button_font_size']),
+            'button_font_weight' => intval($_POST['button_font_weight'])
         );
 
         // Zachovat existující fonty
@@ -326,7 +346,7 @@ class PodlahoveVytapeniKalkulator
         
         echo '<style id="pv-custom-styles">';
         
-        // Font styles
+        // Font faces
         if (!empty($settings['uploaded_fonts']) && $settings['selected_font'] !== 'default') {
             foreach ($settings['uploaded_fonts'] as $font_key => $font_info) {
                 echo "@font-face {\n";
@@ -345,6 +365,28 @@ class PodlahoveVytapeniKalkulator
                 echo "    font-family: inherit !important;\n";
                 echo "}\n";
             }
+        }
+        
+        // Font velikosti a váhy
+        if (isset($settings['heading_font_size'])) {
+            echo ".pv-floor-header h3 {\n";
+            echo "    font-size: {$settings['heading_font_size']}px !important;\n";
+            echo "    font-weight: {$settings['heading_font_weight']} !important;\n";
+            echo "}\n";
+        }
+        
+        if (isset($settings['label_font_size'])) {
+            echo ".pv-form-group label {\n";
+            echo "    font-size: {$settings['label_font_size']}px !important;\n";
+            echo "    font-weight: {$settings['label_font_weight']} !important;\n";
+            echo "}\n";
+        }
+        
+        if (isset($settings['button_font_size'])) {
+            echo ".pv-btn {\n";
+            echo "    font-size: {$settings['button_font_size']}px !important;\n";
+            echo "    font-weight: {$settings['button_font_weight']} !important;\n";
+            echo "}\n";
         }
         
         echo '</style>';
@@ -422,7 +464,7 @@ class PodlahoveVytapeniKalkulator
                 }
             }
 
-            // OPRAVA: Příplatek za rozdělovač pro druhé a další podlaží = cena zdroje tepla z prvního patra
+            // Příplatek za rozdělovač pro druhé a další podlaží = cena zdroje tepla z prvního patra
             if ($index > 0 && $first_floor_heat_source_price > 0) {
                 $floor_cost += $first_floor_heat_source_price;
             }

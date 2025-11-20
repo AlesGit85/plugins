@@ -1,4 +1,4 @@
-/* Administrace kalkulátoru podlahového vytápění s podporou fontů */
+/* Administrace kalkulátoru podlahového vytápění s rozšířenou podporou fontů */
 
 .pv-admin-container {
     display: flex;
@@ -57,6 +57,37 @@
     width: 100px !important;
 }
 
+/* Font Controls - Flexbox layout pro velikost a váhu */
+.pv-font-controls {
+    display: flex;
+    gap: 1rem;
+    align-items: flex-end;
+    flex-wrap: wrap;
+}
+
+.pv-font-control {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.pv-font-control label {
+    font-size: 12px;
+    font-weight: 600;
+    color: #666;
+    margin: 0;
+}
+
+.pv-font-control input,
+.pv-font-control select {
+    min-width: 120px;
+}
+
+.pv-font-control .small-text {
+    min-width: 80px;
+}
+
+/* Info Box Styling */
 .pv-info-box {
     background: white;
     border: 1px solid #ccd0d4;
@@ -107,7 +138,7 @@
     line-height: 1.4;
 }
 
-/* Styly pro fonty */
+/* Font Upload Section */
 .pv-uploaded-fonts {
     margin-top: 15px;
     padding: 15px;
@@ -177,14 +208,16 @@
     box-shadow: none !important;
 }
 
+/* Font Preview Section - Enhanced */
 .pv-font-preview {
     margin-top: 20px;
-    padding: 20px;
-    background: linear-gradient(135deg, #f0f8ff 0%, #e6f3ff 100%);
-    border: 1px solid #b3d9ff;
-    border-radius: 8px;
+    padding: 25px;
+    background: linear-gradient(135deg, #f8fbff 0%, #eef7ff 100%);
+    border: 2px solid #b3d9ff;
+    border-radius: 12px;
     position: relative;
     overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0, 115, 170, 0.1);
 }
 
 .pv-font-preview::before {
@@ -192,27 +225,59 @@
     position: absolute;
     top: 0;
     left: 0;
-    width: 4px;
+    width: 6px;
     height: 100%;
-    background: #0073aa;
+    background: linear-gradient(180deg, #0073aa 0%, #005a87 100%);
 }
 
-.pv-font-preview p {
-    margin: 0;
-    font-size: 18px;
-    line-height: 1.6;
+.pv-preview-section {
+    padding-left: 20px;
+}
+
+.pv-preview-heading {
+    margin: 0 0 20px 0;
     color: #333;
-    word-break: break-word;
-    padding-left: 15px;
-    transition: font-family 0.3s ease;
+    transition: all 0.3s ease;
+    border-bottom: 1px solid #e0e0e0;
+    padding-bottom: 10px;
 }
 
-.pv-font-preview small {
+.pv-preview-labels {
+    margin-bottom: 20px;
+}
+
+.pv-preview-label {
     display: block;
-    margin-top: 8px;
-    font-size: 12px;
-    font-weight: 600;
-    padding-left: 15px;
+    margin: 8px 0;
+    color: #555;
+    transition: all 0.3s ease;
+    cursor: default;
+}
+
+.pv-preview-buttons {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.pv-preview-button {
+    transition: all 0.3s ease;
+    cursor: default;
+    pointer-events: none;
+}
+
+.pv-preview-note {
+    margin-top: 20px;
+    margin-bottom: 0;
+    padding-top: 15px;
+    border-top: 1px solid #d0d0d0;
+    color: #666;
+    font-size: 13px;
+    padding-left: 20px;
+}
+
+.pv-preview-note strong {
+    color: #0073aa;
 }
 
 /* Font upload styling */
@@ -259,6 +324,16 @@
     outline: none;
 }
 
+/* Live Preview Animation */
+@keyframes fontChange {
+    0% { opacity: 0.5; transform: scale(0.98); }
+    100% { opacity: 1; transform: scale(1); }
+}
+
+.pv-preview-section .font-changing {
+    animation: fontChange 0.4s ease-out;
+}
+
 /* Error states */
 .pv-admin-container input.error,
 .pv-admin-container select.error {
@@ -302,6 +377,24 @@
 
 .notice {
     animation: slideIn 0.3s ease-out;
+}
+
+/* Font Controls Responsive */
+@media (max-width: 768px) {
+    .pv-font-controls {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .pv-font-control {
+        width: 100%;
+    }
+    
+    .pv-font-control input,
+    .pv-font-control select {
+        min-width: auto;
+        width: 100%;
+    }
 }
 
 /* Responzivní layout pro mobily */
@@ -355,13 +448,17 @@
         width: auto;
     }
     
-    .pv-font-preview p {
-        font-size: 16px;
-        padding-left: 10px;
+    .pv-preview-section {
+        padding-left: 15px;
     }
     
-    .pv-font-preview small {
-        padding-left: 10px;
+    .pv-preview-buttons {
+        flex-direction: column;
+    }
+    
+    .pv-preview-button {
+        width: 100%;
+        margin-bottom: 8px;
     }
     
     #custom_font_upload {
@@ -408,9 +505,16 @@
         margin-top: 15px;
     }
     
-    .pv-font-preview p {
-        font-size: 14px;
-        line-height: 1.5;
+    .pv-preview-section {
+        padding-left: 10px;
+    }
+    
+    .pv-preview-heading {
+        font-size: 16px;
+    }
+    
+    .pv-preview-label {
+        font-size: 13px;
     }
 }
 
@@ -480,4 +584,36 @@
 .pv-font-format.otf {
     background: #fce4ec;
     color: #c2185b;
+}
+
+/* Interaktivní prvky */
+.pv-font-control input:focus,
+.pv-font-control select:focus {
+    border-color: #0073aa;
+    box-shadow: 0 0 0 2px rgba(0, 115, 170, 0.2);
+    outline: none;
+}
+
+/* Tooltip styling pro live preview */
+.pv-preview-section [data-element]::before {
+    content: attr(data-element);
+    position: absolute;
+    top: -25px;
+    left: 0;
+    font-size: 10px;
+    color: #999;
+    background: #fff;
+    padding: 2px 6px;
+    border-radius: 3px;
+    opacity: 0;
+    transition: opacity 0.2s;
+    pointer-events: none;
+}
+
+.pv-preview-section [data-element] {
+    position: relative;
+}
+
+.pv-preview-section [data-element]:hover::before {
+    opacity: 1;
 }

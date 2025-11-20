@@ -1,11 +1,14 @@
-// Administrace kalkulátoru podlahového vytápění s podporou fontů
+// Administrace kalkulátoru podlahového vytápění s rozšířenou podporou fontů
 
 (function($) {
     'use strict';
     
+    let currentFont = 'default';
+    
     $(document).ready(function() {
         initAdmin();
         initFontHandling();
+        initLiveFontPreview();
     });
     
     function initAdmin() {
@@ -38,7 +41,9 @@
     function initFontHandling() {
         // Font preview při změně selectu
         $('#selected_font').on('change', function() {
-            updateFontPreview($(this).val());
+            const selectedFont = $(this).val();
+            currentFont = selectedFont;
+            updateFontPreview(selectedFont);
         });
         
         // Mazání fontů
@@ -58,7 +63,63 @@
         });
         
         // Počáteční font preview
-        updateFontPreview($('#selected_font').val());
+        currentFont = $('#selected_font').val();
+        updateFontPreview(currentFont);
+    }
+    
+    function initLiveFontPreview() {
+        // Live preview pro velikosti a váhy fontů
+        const fontControls = [
+            '#heading_font_size', '#heading_font_weight',
+            '#label_font_size', '#label_font_weight', 
+            '#button_font_size', '#button_font_weight'
+        ];
+        
+        $(fontControls.join(', ')).on('input change', function() {
+            updateLiveFontPreview();
+        });
+        
+        // Počáteční aplikace
+        updateLiveFontPreview();
+    }
+    
+    function updateLiveFontPreview() {
+        const settings = {
+            heading: {
+                size: $('#heading_font_size').val() || '20',
+                weight: $('#heading_font_weight').val() || '600'
+            },
+            label: {
+                size: $('#label_font_size').val() || '14',
+                weight: $('#label_font_weight').val() || '600'  
+            },
+            button: {
+                size: $('#button_font_size').val() || '16',
+                weight: $('#button_font_weight').val() || '600'
+            }
+        };
+        
+        // Aplikovat styly na preview elementy
+        $('.pv-preview-heading').css({
+            'font-size': settings.heading.size + 'px',
+            'font-weight': settings.heading.weight
+        });
+        
+        $('.pv-preview-label').css({
+            'font-size': settings.label.size + 'px',
+            'font-weight': settings.label.weight
+        });
+        
+        $('.pv-preview-button').css({
+            'font-size': settings.button.size + 'px',
+            'font-weight': settings.button.weight
+        });
+        
+        // Animace změny
+        $('.pv-preview-section').addClass('font-changing');
+        setTimeout(function() {
+            $('.pv-preview-section').removeClass('font-changing');
+        }, 400);
     }
     
     function validateFontFile(input) {
@@ -89,10 +150,24 @@
     }
     
     function showFontUploadPreview(file) {
-        const preview = $('#font-preview p');
+        const preview = $('.pv-preview-section');
         const fontName = file.name.replace(/\.[^/.]+$/, ""); // Odstranit příponu
         
-        // Vytvořit dočasný font face pro preview
+        // Vytvoř notification
+        const notification = $('<div class="font-upload-notification">📁 Font "' + fontName + '" připraven k nahrání</div>');
+        notification.css({
+            'background': '#e8f5e8',
+            'color': '#2e7d32',
+            'padding': '8px 12px',
+            'border-radius': '4px',
+            'margin': '10px 0',
+            'font-size': '13px',
+            'border': '1px solid #81c784'
+        });
+        
+        $('.pv-font-preview').prepend(notification);
+        
+        // Pokus o live preview fontu
         const reader = new FileReader();
         reader.onload = function(e) {
             const fontData = e.target.result;
@@ -100,32 +175,64 @@
             
             fontFace.load().then(function(loadedFont) {
                 document.fonts.add(loadedFont);
-                preview.css('font-family', 'temp-preview-font, sans-serif');
-                preview.text('Náhled fontu ' + fontName + ': Kalkulátor podlahového vytápění 1234567890');
+                applyTempFont('temp-preview-font');
                 
-                // Přidat informaci o uploadu
-                preview.append('<br><small style="color: #46b450;">✓ Font připraven k nahrání</small>');
+                notification.html('✓ Font "' + fontName + '" načten pro náhled').css({
+                    'background': '#e3f2fd',
+                    'color': '#1565c0',
+                    'border-color': '#64b5f6'
+                });
+                
+                setTimeout(() => notification.fadeOut(function() { $(this).remove(); }), 3000);
             }).catch(function() {
-                preview.append('<br><small style="color: #dc3232;">⚠ Náhled fontu se nepodařilo načíst</small>');
+                notification.html('⚠ Náhled fontu se nepodařilo načíst').css({
+                    'background': '#ffebee',
+                    'color': '#c62828',
+                    'border-color': '#ef5350'
+                });
+                
+                setTimeout(() => notification.fadeOut(function() { $(this).remove(); }), 3000);
             });
         };
         reader.readAsDataURL(file);
     }
     
+    function applyTempFont(fontFamily) {
+        $('.pv-preview-section *').css('font-family', fontFamily + ', sans-serif');
+    }
+    
     function updateFontPreview(selectedFont) {
-        const preview = $('#font-preview p');
+        let fontFamily;
         
         if (selectedFont === 'default' || !selectedFont) {
-            preview.css('font-family', '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif');
-            preview.text('Náhled fontu: Kalkulátor podlahového vytápění 1234567890');
+            fontFamily = '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
         } else {
-            // Najít font v nahraných fontech
-            const fontOption = $('#selected_font option[value="' + selectedFont + '"]');
-            const fontName = fontOption.text();
-            
-            preview.css('font-family', 'pv-custom-' + selectedFont + ', sans-serif');
-            preview.text('Náhled fontu ' + fontName + ': Kalkulátor podlahového vytápění 1234567890');
+            fontFamily = 'pv-custom-' + selectedFont + ', sans-serif';
         }
+        
+        // Aplikovat font na všechny preview elementy
+        $('.pv-preview-section *').css('font-family', fontFamily);
+        
+        // Update info o aktivním fontu
+        const fontOption = $('#selected_font option[value="' + selectedFont + '"]');
+        const fontName = fontOption.text();
+        
+        // Vytvořit/aktualizovat font info
+        let fontInfo = $('.pv-font-info');
+        if (fontInfo.length === 0) {
+            fontInfo = $('<div class="pv-font-info"></div>');
+            $('.pv-preview-note').before(fontInfo);
+        }
+        
+        fontInfo.html('<strong>Aktivní font:</strong> ' + fontName).css({
+            'padding': '10px',
+            'background': '#f0f8ff',
+            'border': '1px solid #b3d9ff',
+            'border-radius': '4px',
+            'margin-bottom': '15px',
+            'font-size': '13px',
+            'color': '#333'
+        });
     }
     
     function deleteFontFile(fontKey, button) {
@@ -175,11 +282,19 @@
         
         $('.pv-admin-container').prepend(notice);
         
+        // Auto dismiss
         setTimeout(function() {
             notice.fadeOut(function() {
                 notice.remove();
             });
         }, 5000);
+        
+        // Manual dismiss
+        notice.on('click', '.notice-dismiss', function() {
+            notice.fadeOut(function() {
+                notice.remove();
+            });
+        });
     }
     
     function validateAdminForm(e) {
@@ -196,7 +311,10 @@
             if (isNaN(value) || value < min || value > max) {
                 hasErrors = true;
                 input.addClass('error');
-                errors.push(input.closest('tr').find('label').text() + ': Neplatná hodnota');
+                
+                const label = input.closest('tr').find('label').first().text() ||
+                             input.closest('.pv-font-control').find('label').text();
+                errors.push(label + ': Neplatná hodnota');
             } else {
                 input.removeClass('error');
             }
@@ -238,6 +356,19 @@
             }
         }
         
+        // Validace font velikostí
+        const fontSizeInputs = $('input[name$="_font_size"]');
+        fontSizeInputs.each(function() {
+            const input = $(this);
+            const value = parseInt(input.val());
+            
+            if (value && (value < 8 || value > 72)) {
+                hasErrors = true;
+                input.addClass('error');
+                errors.push('Velikost fontu: Musí být mezi 8-72px');
+            }
+        });
+        
         if (hasErrors) {
             e.preventDefault();
             alert('Opravte prosím následující chyby:\n\n' + errors.join('\n'));
@@ -259,7 +390,9 @@
             'input[name="admin_email"]',
             'input[name="company_name"]',
             'input[name="max_floors"]',
-            'select[name="selected_font"]'
+            'select[name="selected_font"]',
+            'input[name$="_font_size"]',
+            'select[name$="_font_weight"]'
         ];
         
         $(autoSaveFields.join(', ')).on('blur change', function() {
@@ -277,6 +410,16 @@
             
             if (input.length) {
                 input.attr('title', desc.text());
+            }
+        });
+        
+        // Tooltips pro font controls
+        $('.pv-font-control label').each(function() {
+            const label = $(this);
+            const input = label.siblings('input, select');
+            
+            if (input.length) {
+                input.attr('title', label.text() + ' - aktuální hodnota: ' + input.val());
             }
         });
     }
@@ -309,6 +452,10 @@
                 background: ${buttonColor} !important;
                 border-color: ${buttonColor} !important;
             }
+            .pv-preview-button.button-primary {
+                background: ${buttonColor} !important;
+                border-color: ${buttonColor} !important;
+            }
         `;
         
         $('#pv-admin-preview').text(previewCSS);
@@ -332,18 +479,56 @@
         return hexRegex.test(color);
     }
     
+    // Utility funkce pro font weights
+    function getFontWeightName(weight) {
+        const weights = {
+            '300': 'Tenký',
+            '400': 'Normální', 
+            '500': 'Středně silný',
+            '600': 'Polosilný',
+            '700': 'Silný',
+            '800': 'Extra silný'
+        };
+        return weights[weight] || 'Neznámý';
+    }
+    
+    // Debug function
+    function debugFontSettings() {
+        const settings = {
+            selectedFont: $('#selected_font').val(),
+            heading: {
+                size: $('#heading_font_size').val(),
+                weight: $('#heading_font_weight').val()
+            },
+            label: {
+                size: $('#label_font_size').val(), 
+                weight: $('#label_font_weight').val()
+            },
+            button: {
+                size: $('#button_font_size').val(),
+                weight: $('#button_font_weight').val()
+            }
+        };
+        
+        console.log('Font Settings:', settings);
+        return settings;
+    }
+    
     // Export hodnot pro testování
     window.PVAdmin = {
         validateForm: validateAdminForm,
         updatePreview: updatePreview,
         updateFontPreview: updateFontPreview,
+        updateLiveFontPreview: updateLiveFontPreview,
         deleteFontFile: deleteFontFile,
-        isValidHexColor: isValidHexColor
+        isValidHexColor: isValidHexColor,
+        debugFontSettings: debugFontSettings,
+        showAdminNotice: showAdminNotice
     };
     
 })(jQuery);
 
-// CSS pro font handling
+// CSS pro rozšířené font handling
 document.addEventListener('DOMContentLoaded', function() {
     const style = document.createElement('style');
     style.textContent = `
@@ -357,99 +542,37 @@ document.addEventListener('DOMContentLoaded', function() {
             box-shadow: 0 0 0 1px #46b450;
         }
         
-        .pv-admin-container .form-table tr:hover {
-            background: #fafafa;
+        .font-upload-notification {
+            animation: slideInNotification 0.3s ease-out;
         }
         
-        .pv-uploaded-fonts {
-            margin-top: 10px;
-            padding: 10px;
-            background: #f9f9f9;
-            border-radius: 4px;
-        }
-        
-        .pv-font-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 8px 12px;
-            background: white;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            margin-bottom: 8px;
-        }
-        
-        .pv-font-item:last-child {
-            margin-bottom: 0;
-        }
-        
-        .pv-font-name {
-            font-weight: 600;
-            color: #333;
-        }
-        
-        .pv-delete-font {
-            background: #dc3232;
-            border-color: #dc3232;
-            color: white;
-        }
-        
-        .pv-delete-font:hover {
-            background: #c32626;
-            border-color: #c32626;
-        }
-        
-        .pv-font-preview {
-            margin-top: 15px;
-            padding: 15px;
-            background: #f0f8ff;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-        }
-        
-        .pv-font-preview p {
-            margin: 0;
-            font-size: 16px;
-            line-height: 1.5;
-            word-break: break-word;
-        }
-        
-        @keyframes pulse {
-            0% { opacity: 1; }
-            50% { opacity: 0.5; }
-            100% { opacity: 1; }
-        }
-        
-        .pv-admin-container .auto-saved {
-            animation: pulse 0.5s ease-in-out;
-        }
-        
-        /* Font upload styling */
-        #custom_font_upload {
-            padding: 8px;
-            border: 2px dashed #ddd;
-            background: #fafafa;
-            border-radius: 4px;
-            width: 100%;
-            max-width: 400px;
-        }
-        
-        #custom_font_upload:hover {
-            border-color: #0073aa;
-            background: #f0f8ff;
-        }
-        
-        /* Responsive font preview */
-        @media (max-width: 768px) {
-            .pv-font-item {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 8px;
+        @keyframes slideInNotification {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
             }
-            
-            .pv-delete-font {
-                align-self: flex-end;
+            to {
+                opacity: 1;
+                transform: translateY(0);
             }
+        }
+        
+        .pv-font-info {
+            animation: fadeIn 0.3s ease-out;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        /* Live preview hover effects */
+        .pv-preview-section [data-element]:hover {
+            background: rgba(0, 115, 170, 0.1);
+            border-radius: 4px;
+            padding: 4px;
+            margin: -4px;
+            transition: all 0.2s ease;
         }
     `;
     document.head.appendChild(style);

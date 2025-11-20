@@ -265,14 +265,127 @@ if (!defined('ABSPATH')) {
                                         <?php endif; ?>
                                     </select>
                                     <p class="description">Vyberte font, který se použije v kalkulačce</p>
-                                    
-                                    <div id="font-preview" class="pv-font-preview">
-                                        <p>Náhled fontu: Kalkulátor podlahového vytápění 1234567890</p>
-                                    </div>
                                 </td>
                             </tr>
                         </tbody>
                     </table>
+                </div>
+
+                <div class="pv-settings-section">
+                    <h2>Velikosti a váhy fontů</h2>
+                    <table class="form-table">
+                        <tbody>
+                            <tr>
+                                <th scope="row">
+                                    <label>Nadpisy podlaží</label>
+                                </th>
+                                <td>
+                                    <div class="pv-font-controls">
+                                        <div class="pv-font-control">
+                                            <label for="heading_font_size">Velikost (px)</label>
+                                            <input type="number"
+                                                   id="heading_font_size"
+                                                   name="heading_font_size"
+                                                   value="<?php echo esc_attr($settings['heading_font_size'] ?? '20'); ?>"
+                                                   step="1" min="10" max="48" class="small-text" />
+                                        </div>
+                                        <div class="pv-font-control">
+                                            <label for="heading_font_weight">Váha</label>
+                                            <select id="heading_font_weight" name="heading_font_weight" class="regular-text">
+                                                <option value="300" <?php selected($settings['heading_font_weight'] ?? '600', '300'); ?>>Tenký (300)</option>
+                                                <option value="400" <?php selected($settings['heading_font_weight'] ?? '600', '400'); ?>>Normální (400)</option>
+                                                <option value="500" <?php selected($settings['heading_font_weight'] ?? '600', '500'); ?>>Středně silný (500)</option>
+                                                <option value="600" <?php selected($settings['heading_font_weight'] ?? '600', '600'); ?>>Polosilný (600)</option>
+                                                <option value="700" <?php selected($settings['heading_font_weight'] ?? '600', '700'); ?>>Silný (700)</option>
+                                                <option value="800" <?php selected($settings['heading_font_weight'] ?? '600', '800'); ?>>Extra silný (800)</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <p class="description">"Podlaží 1", "Podlaží 2", atd.</p>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th scope="row">
+                                    <label>Popisky polí</label>
+                                </th>
+                                <td>
+                                    <div class="pv-font-controls">
+                                        <div class="pv-font-control">
+                                            <label for="label_font_size">Velikost (px)</label>
+                                            <input type="number"
+                                                   id="label_font_size"
+                                                   name="label_font_size"
+                                                   value="<?php echo esc_attr($settings['label_font_size'] ?? '14'); ?>"
+                                                   step="1" min="10" max="24" class="small-text" />
+                                        </div>
+                                        <div class="pv-font-control">
+                                            <label for="label_font_weight">Váha</label>
+                                            <select id="label_font_weight" name="label_font_weight" class="regular-text">
+                                                <option value="300" <?php selected($settings['label_font_weight'] ?? '600', '300'); ?>>Tenký (300)</option>
+                                                <option value="400" <?php selected($settings['label_font_weight'] ?? '600', '400'); ?>>Normální (400)</option>
+                                                <option value="500" <?php selected($settings['label_font_weight'] ?? '600', '500'); ?>>Středně silný (500)</option>
+                                                <option value="600" <?php selected($settings['label_font_weight'] ?? '600', '600'); ?>>Polosilný (600)</option>
+                                                <option value="700" <?php selected($settings['label_font_weight'] ?? '600', '700'); ?>>Silný (700)</option>
+                                                <option value="800" <?php selected($settings['label_font_weight'] ?? '600', '800'); ?>>Extra silný (800)</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <p class="description">"Plocha (m²)", "Varianta instalace", "Typ potrubí", "Zdroj tepla"</p>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th scope="row">
+                                    <label>Tlačítka</label>
+                                </th>
+                                <td>
+                                    <div class="pv-font-controls">
+                                        <div class="pv-font-control">
+                                            <label for="button_font_size">Velikost (px)</label>
+                                            <input type="number"
+                                                   id="button_font_size"
+                                                   name="button_font_size"
+                                                   value="<?php echo esc_attr($settings['button_font_size'] ?? '16'); ?>"
+                                                   step="1" min="10" max="24" class="small-text" />
+                                        </div>
+                                        <div class="pv-font-control">
+                                            <label for="button_font_weight">Váha</label>
+                                            <select id="button_font_weight" name="button_font_weight" class="regular-text">
+                                                <option value="300" <?php selected($settings['button_font_weight'] ?? '600', '300'); ?>>Tenký (300)</option>
+                                                <option value="400" <?php selected($settings['button_font_weight'] ?? '600', '400'); ?>>Normální (400)</option>
+                                                <option value="500" <?php selected($settings['button_font_weight'] ?? '600', '500'); ?>>Středně silný (500)</option>
+                                                <option value="600" <?php selected($settings['button_font_weight'] ?? '600', '600'); ?>>Polosilný (600)</option>
+                                                <option value="700" <?php selected($settings['button_font_weight'] ?? '600', '700'); ?>>Silný (700)</option>
+                                                <option value="800" <?php selected($settings['button_font_weight'] ?? '600', '800'); ?>>Extra silný (800)</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <p class="description">"+ Přidat podlaží", "Vypočítat cenu", "Odeslat výpočet"</p>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="pv-settings-section">
+                    <h2>Náhled fontů</h2>
+                    <div id="font-preview" class="pv-font-preview">
+                        <div class="pv-preview-section">
+                            <h3 class="pv-preview-heading" data-element="heading">Podlaží 1</h3>
+                            <div class="pv-preview-labels">
+                                <label class="pv-preview-label" data-element="label">Plocha (m²)</label>
+                                <label class="pv-preview-label" data-element="label">Varianta instalace</label>
+                                <label class="pv-preview-label" data-element="label">Typ potrubí</label>
+                                <label class="pv-preview-label" data-element="label">Zdroj tepla</label>
+                            </div>
+                            <div class="pv-preview-buttons">
+                                <button type="button" class="pv-preview-button button" data-element="button">+ Přidat podlaží</button>
+                                <button type="button" class="pv-preview-button button button-primary" data-element="button">Vypočítat cenu</button>
+                            </div>
+                        </div>
+                        <p class="pv-preview-note">
+                            <strong>Live náhled:</strong> Změny se projeví okamžitě při úpravě hodnot výše.
+                        </p>
+                    </div>
                 </div>
 
                 <div class="pv-settings-section">
@@ -385,7 +498,7 @@ if (!defined('ABSPATH')) {
                     <li>✓ Sběr kontaktních údajů</li>
                     <li>✓ Automatické odesílání emailů</li>
                     <li>✓ Plně přizpůsobitelný design</li>
-                    <li>✓ Vlastní fonty</li>
+                    <li>✓ Vlastní fonty s detailním nastavením</li>
                 </ul>
             </div>
 
@@ -397,6 +510,13 @@ if (!defined('ABSPATH')) {
                     <li><strong>TTF/OTF</strong> - původní formáty</li>
                 </ul>
                 <p>Doporučená velikost fontů: maximálně 200KB pro rychlé načítání.</p>
+                
+                <h4>📐 Velikosti fontů</h4>
+                <ul>
+                    <li><strong>Nadpisy:</strong> 16-24px pro čitelnost</li>
+                    <li><strong>Popisky:</strong> 12-16px pro jasnost</li>
+                    <li><strong>Tlačítka:</strong> 14-18px pro akčnost</li>
+                </ul>
             </div>
         </div>
     </div>
