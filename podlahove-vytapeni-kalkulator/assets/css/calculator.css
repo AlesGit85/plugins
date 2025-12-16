@@ -105,7 +105,25 @@
     min-width: 200px;
 }
 
-.pv-form-group label {
+/* Speciální styling pro skupinu variant instalace */
+.pv-form-group.pv-installation-group {
+    flex-basis: 100%;
+    min-width: unset;
+}
+
+/* Speciální řádek pro dropdowny - zajistí že budou vedle sebe */
+.pv-form-row.pv-dropdowns-row {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.pv-form-row.pv-dropdowns-row .pv-form-group {
+    flex: 1;
+    min-width: 200px;
+}
+
+.pv-form-group > label {
     display: block;
     margin-bottom: 0.5rem;
     font-weight: 600;
@@ -188,6 +206,13 @@
     -moz-appearance: textfield;
 }
 
+/* Instalační možnosti - layout vedle sebe */
+.pv-installation-options {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+}
+
 /* Radio tlačítka - robustní verze */
 .pv-radio-group {
     display: flex;
@@ -205,6 +230,8 @@
     transition: all 0.3s ease;
     background: white;
     position: relative;
+    height: 100%;
+    box-sizing: border-box;
 }
 
 .pv-radio-option:hover {
@@ -256,16 +283,22 @@
     width: 0;
 }
 
+.pv-radio-content {
+    width: 100%;
+    text-align: center;
+}
+
 .pv-radio-content strong {
     display: block;
     color: var(--text-color);
     margin-bottom: 0.25rem;
     transition: color 0.3s ease;
+    font-size: 0.95rem;
 }
 
 .pv-radio-content small {
     color: var(--text-color);
-    font-size: 0.85rem;
+    font-size: 0.8rem;
     transition: color 0.3s ease;
 }
 
@@ -609,10 +642,17 @@
         width: 100%;
     }
 
+    /* Formulářové řádky na mobilu - pod sebou */
     .pv-form-row {
         flex-direction: column;
         gap: 0.75rem;
         margin-bottom: 1.25rem;
+    }
+
+    /* Dropdowny na tablet stále vedle sebe */
+    .pv-form-row.pv-dropdowns-row {
+        flex-direction: row;
+        gap: 1rem;
     }
 
     .pv-form-group {
@@ -620,8 +660,14 @@
         width: 100%;
     }
 
-    .pv-form-group label {
-        text-align: center;
+    .pv-form-group > label {
+        text-align: left;
+    }
+
+    /* Instalační varianty na mobilu - stále vedle sebe ale responzivněji */
+    .pv-installation-options {
+        gap: 0.75rem;
+        grid-template-columns: 1fr 1fr;
     }
 
     /* Mobilní oprava pro ovládání plochy */
@@ -654,11 +700,11 @@
     }
 
     .pv-radio-content strong {
-        font-size: 1rem;
+        font-size: 0.9rem;
     }
 
     .pv-radio-content small {
-        font-size: 0.8rem;
+        font-size: 0.75rem;
     }
 
     .pv-result-item {
@@ -706,6 +752,18 @@
 
     .pv-floor-header h3 {
         font-size: 1.1rem;
+    }
+
+    /* Dropdowny na malých mobilech - pod sebou */
+    .pv-form-row.pv-dropdowns-row {
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+
+    /* Na malých mobilech mohou být instalace pod sebou */
+    .pv-installation-options {
+        grid-template-columns: 1fr;
+        gap: 0.5rem;
     }
 
     .pv-area-control {
@@ -765,31 +823,45 @@
     }
 
     .pv-radio-content {
-        font-size: 0.9rem;
+        font-size: 0.85rem;
+    }
+
+    .pv-radio-content strong {
+        font-size: 0.85rem;
     }
 
     .pv-radio-content small {
-        font-size: 0.75rem;
+        font-size: 0.7rem;
     }
 
     /* Menší font v mobilních selectech */
-    @media (max-width: 768px) {
-        .pv-select {
-            font-size: 0.9rem;
-            padding: 0.75rem 2.25rem 0.75rem 0.75rem;
-            /* Menší padding vpravo pro šipku */
-            background-size: 1.25em 1.25em;
-            /* Menší šipka */
-            background-position: right 0.5rem center;
-        }
+    .pv-select {
+        font-size: 0.85rem;
+        padding: 0.75rem 2rem 0.75rem 0.65rem;
+        background-size: 1.1em 1.1em;
+        background-position: right 0.4rem center;
     }
+}
 
-    @media (max-width: 480px) {
-        .pv-select {
-            font-size: 0.85rem;
-            padding: 0.75rem 2rem 0.75rem 0.65rem;
-            background-size: 1.1em 1.1em;
-            background-position: right 0.4rem center;
-        }
+/* Desktop optimalizace pro larger screens */
+@media (min-width: 1024px) {
+    .pv-calculator {
+        padding: 2.5rem;
+    }
+    
+    .pv-installation-options {
+        gap: 1.5rem;
+    }
+    
+    .pv-radio-option {
+        padding: 1.25rem;
+    }
+    
+    .pv-radio-content strong {
+        font-size: 1rem;
+    }
+    
+    .pv-radio-content small {
+        font-size: 0.85rem;
     }
 }

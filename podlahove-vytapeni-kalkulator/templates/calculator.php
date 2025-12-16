@@ -28,9 +28,9 @@ if (!defined('ABSPATH')) {
                     </div>
                     
                     <div class="pv-form-row">
-                        <div class="pv-form-group">
+                        <div class="pv-form-group pv-installation-group">
                             <label>Varianta instalace</label>
-                            <div class="pv-radio-group">
+                            <div class="pv-installation-options">
                                 <label class="pv-radio-option">
                                     <input type="radio" name="installation_1" value="tacker" checked>
                                     <span class="pv-radio-custom"></span>
@@ -51,7 +51,7 @@ if (!defined('ABSPATH')) {
                         </div>
                     </div>
                     
-                    <div class="pv-form-row">
+                    <div class="pv-form-row pv-dropdowns-row">
                         <div class="pv-form-group">
                             <label>Typ potrubí</label>
                             <div class="pv-select-wrapper">
@@ -65,9 +65,7 @@ if (!defined('ABSPATH')) {
                                 </select>
                             </div>
                         </div>
-                    </div>
-                    
-                    <div class="pv-form-row">
+                        
                         <div class="pv-form-group">
                             <label>Zdroj tepla</label>
                             <div class="pv-select-wrapper">
@@ -109,7 +107,7 @@ if (!defined('ABSPATH')) {
             
             <div id="pv-contact-section" class="pv-contact-section" style="display: none;">
                 <h3>Kontaktní údaje</h3>
-                <p>Pro zobrazení detailního výpisu a možnost konzultace vyplňte prosím kontaktní údaje:</p>
+                <p>Pro zaslání detailního výpisu a konzultace s technickou podporou vyplňte prosím kontaktní údaje:</p>
                 
                 <div class="pv-form-row">
                     <div class="pv-form-group">
@@ -176,9 +174,9 @@ if (!defined('ABSPATH')) {
         </div>
         
         <div class="pv-form-row">
-            <div class="pv-form-group">
+            <div class="pv-form-group pv-installation-group">
                 <label>Varianta instalace</label>
-                <div class="pv-radio-group">
+                <div class="pv-installation-options">
                     <label class="pv-radio-option">
                         <input type="radio" name="installation_{{floor_number}}" value="tacker" checked>
                         <span class="pv-radio-custom"></span>
@@ -199,7 +197,7 @@ if (!defined('ABSPATH')) {
             </div>
         </div>
         
-        <div class="pv-form-row">
+        <div class="pv-form-row pv-dropdowns-row">
             <div class="pv-form-group">
                 <label for="pipe_type_{{floor_number}}">Typ potrubí</label>
                 <div class="pv-select-wrapper">
@@ -213,9 +211,7 @@ if (!defined('ABSPATH')) {
                     </select>
                 </div>
             </div>
-        </div>
-        
-        <div class="pv-form-row">
+            
             <div class="pv-form-group">
                 <label for="heat_source_{{floor_number}}">Zdroj tepla</label>
                 <div class="pv-select-wrapper">

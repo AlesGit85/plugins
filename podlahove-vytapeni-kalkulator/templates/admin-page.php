@@ -272,7 +272,7 @@ if (!defined('ABSPATH')) {
                 </div>
 
                 <div class="pv-settings-section">
-                    <h2>Velikosti a váhy fontů</h2>
+                    <h2>Velikosti, váhy a styly fontů</h2>
                     <table class="form-table">
                         <tbody>
                             <tr>
@@ -298,6 +298,22 @@ if (!defined('ABSPATH')) {
                                                 <option value="600" <?php selected($settings['heading_font_weight'] ?? '600', '600'); ?>>Polosilný (600)</option>
                                                 <option value="700" <?php selected($settings['heading_font_weight'] ?? '600', '700'); ?>>Silný (700)</option>
                                                 <option value="800" <?php selected($settings['heading_font_weight'] ?? '600', '800'); ?>>Extra silný (800)</option>
+                                            </select>
+                                        </div>
+                                        <div class="pv-font-control">
+                                            <label for="heading_font_style">Styl</label>
+                                            <select id="heading_font_style" name="heading_font_style" class="regular-text">
+                                                <option value="normal" <?php selected($settings['heading_font_style'] ?? 'normal', 'normal'); ?>>Normální</option>
+                                                <option value="italic" <?php selected($settings['heading_font_style'] ?? 'normal', 'italic'); ?>>Kurzíva</option>
+                                            </select>
+                                        </div>
+                                        <div class="pv-font-control">
+                                            <label for="heading_text_transform">Transformace</label>
+                                            <select id="heading_text_transform" name="heading_text_transform" class="regular-text">
+                                                <option value="none" <?php selected($settings['heading_text_transform'] ?? 'none', 'none'); ?>>Žádná</option>
+                                                <option value="uppercase" <?php selected($settings['heading_text_transform'] ?? 'none', 'uppercase'); ?>>VERZÁLKY</option>
+                                                <option value="lowercase" <?php selected($settings['heading_text_transform'] ?? 'none', 'lowercase'); ?>>malá písmena</option>
+                                                <option value="capitalize" <?php selected($settings['heading_text_transform'] ?? 'none', 'capitalize'); ?>>Kapitálky</option>
                                             </select>
                                         </div>
                                     </div>
@@ -329,6 +345,22 @@ if (!defined('ABSPATH')) {
                                                 <option value="800" <?php selected($settings['label_font_weight'] ?? '600', '800'); ?>>Extra silný (800)</option>
                                             </select>
                                         </div>
+                                        <div class="pv-font-control">
+                                            <label for="label_font_style">Styl</label>
+                                            <select id="label_font_style" name="label_font_style" class="regular-text">
+                                                <option value="normal" <?php selected($settings['label_font_style'] ?? 'normal', 'normal'); ?>>Normální</option>
+                                                <option value="italic" <?php selected($settings['label_font_style'] ?? 'normal', 'italic'); ?>>Kurzíva</option>
+                                            </select>
+                                        </div>
+                                        <div class="pv-font-control">
+                                            <label for="label_text_transform">Transformace</label>
+                                            <select id="label_text_transform" name="label_text_transform" class="regular-text">
+                                                <option value="none" <?php selected($settings['label_text_transform'] ?? 'none', 'none'); ?>>Žádná</option>
+                                                <option value="uppercase" <?php selected($settings['label_text_transform'] ?? 'none', 'uppercase'); ?>>VERZÁLKY</option>
+                                                <option value="lowercase" <?php selected($settings['label_text_transform'] ?? 'none', 'lowercase'); ?>>malá písmena</option>
+                                                <option value="capitalize" <?php selected($settings['label_text_transform'] ?? 'none', 'capitalize'); ?>>Kapitálky</option>
+                                            </select>
+                                        </div>
                                     </div>
                                     <p class="description">"Plocha (m²)", "Varianta instalace", "Typ potrubí", "Zdroj tepla"</p>
                                 </td>
@@ -356,6 +388,22 @@ if (!defined('ABSPATH')) {
                                                 <option value="600" <?php selected($settings['button_font_weight'] ?? '600', '600'); ?>>Polosilný (600)</option>
                                                 <option value="700" <?php selected($settings['button_font_weight'] ?? '600', '700'); ?>>Silný (700)</option>
                                                 <option value="800" <?php selected($settings['button_font_weight'] ?? '600', '800'); ?>>Extra silný (800)</option>
+                                            </select>
+                                        </div>
+                                        <div class="pv-font-control">
+                                            <label for="button_font_style">Styl</label>
+                                            <select id="button_font_style" name="button_font_style" class="regular-text">
+                                                <option value="normal" <?php selected($settings['button_font_style'] ?? 'normal', 'normal'); ?>>Normální</option>
+                                                <option value="italic" <?php selected($settings['button_font_style'] ?? 'normal', 'italic'); ?>>Kurzíva</option>
+                                            </select>
+                                        </div>
+                                        <div class="pv-font-control">
+                                            <label for="button_text_transform">Transformace</label>
+                                            <select id="button_text_transform" name="button_text_transform" class="regular-text">
+                                                <option value="none" <?php selected($settings['button_text_transform'] ?? 'none', 'none'); ?>>Žádná</option>
+                                                <option value="uppercase" <?php selected($settings['button_text_transform'] ?? 'none', 'uppercase'); ?>>VERZÁLKY</option>
+                                                <option value="lowercase" <?php selected($settings['button_text_transform'] ?? 'none', 'lowercase'); ?>>malá písmena</option>
+                                                <option value="capitalize" <?php selected($settings['button_text_transform'] ?? 'none', 'capitalize'); ?>>Kapitálky</option>
                                             </select>
                                         </div>
                                     </div>
@@ -499,6 +547,7 @@ if (!defined('ABSPATH')) {
                     <li>✓ Automatické odesílání emailů</li>
                     <li>✓ Plně přizpůsobitelný design</li>
                     <li>✓ Vlastní fonty s detailním nastavením</li>
+                    <li>✓ Styly písma (kurzíva, verzálky, atd.)</li>
                 </ul>
             </div>
 
@@ -516,6 +565,14 @@ if (!defined('ABSPATH')) {
                     <li><strong>Nadpisy:</strong> 16-24px pro čitelnost</li>
                     <li><strong>Popisky:</strong> 12-16px pro jasnost</li>
                     <li><strong>Tlačítka:</strong> 14-18px pro akčnost</li>
+                </ul>
+
+                <h4>🎨 Styly písma</h4>
+                <ul>
+                    <li><strong>Normální:</strong> standardní text</li>
+                    <li><strong>Kurzíva:</strong> šikmý text pro eleganci</li>
+                    <li><strong>Verzálky:</strong> VELKÁ PÍSMENA pro důraz</li>
+                    <li><strong>Kapitálky:</strong> První Písmena Velká</li>
                 </ul>
             </div>
         </div>

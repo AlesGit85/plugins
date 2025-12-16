@@ -3,8 +3,8 @@
 /**
  * Plugin Name: Kalkulátor podlahového vytápění
  * Plugin URI: https://allimedia.cz/
- * Description: Plugin pro výpočet nákladů na realizaci podlahového vytápění s administračním rozhraním a pokročilou font customizací.
- * Version: 1.7.0
+ * Description: Plugin pro výpočet nákladů na realizaci podlahového vytápění s administračním rozhraním a pokročilou font customizací včetně stylů písma.
+ * Version: 1.8.3
  * Author: Allimedia.cz
  * Author URI: https://allimedia.cz/
  * Text Domain: podlahove-vytapeni
@@ -21,7 +21,7 @@ if (!defined('ABSPATH')) {
 // Definice konstant
 define('PV_PLUGIN_URL', plugin_dir_url(__FILE__));
 define('PV_PLUGIN_PATH', plugin_dir_path(__FILE__));
-define('PV_VERSION', '1.7.0');
+define('PV_VERSION', '1.8.0');
 
 class PodlahoveVytapeniKalkulator
 {
@@ -61,7 +61,7 @@ class PodlahoveVytapeniKalkulator
 
     public function activate()
     {
-        // Vytvoření default nastavení s rozšířenými font možnostmi
+        // Vytvoření default nastavení s rozšířenými font možnostmi včetně stylů
         $default_settings = array(
             'tacker_system_price' => 200,
             'system_board_price' => 450,
@@ -93,7 +93,15 @@ class PodlahoveVytapeniKalkulator
             'label_font_size' => 14,
             'label_font_weight' => 600,
             'button_font_size' => 16,
-            'button_font_weight' => 600
+            'button_font_weight' => 600,
+            
+            // NOVÉ: Font styly a transformace
+            'heading_font_style' => 'normal',
+            'heading_text_transform' => 'none',
+            'label_font_style' => 'normal',
+            'label_text_transform' => 'none',
+            'button_font_style' => 'normal',
+            'button_text_transform' => 'none'
         );
 
         add_option('pv_settings', $default_settings);
@@ -212,7 +220,15 @@ class PodlahoveVytapeniKalkulator
             'label_font_size' => intval($_POST['label_font_size']),
             'label_font_weight' => intval($_POST['label_font_weight']),
             'button_font_size' => intval($_POST['button_font_size']),
-            'button_font_weight' => intval($_POST['button_font_weight'])
+            'button_font_weight' => intval($_POST['button_font_weight']),
+            
+            // NOVÉ: Font styly a transformace
+            'heading_font_style' => $this->sanitize_font_style($_POST['heading_font_style']),
+            'heading_text_transform' => $this->sanitize_text_transform($_POST['heading_text_transform']),
+            'label_font_style' => $this->sanitize_font_style($_POST['label_font_style']),
+            'label_text_transform' => $this->sanitize_text_transform($_POST['label_text_transform']),
+            'button_font_style' => $this->sanitize_font_style($_POST['button_font_style']),
+            'button_text_transform' => $this->sanitize_text_transform($_POST['button_text_transform'])
         );
 
         // Zachovat existující fonty
@@ -234,6 +250,24 @@ class PodlahoveVytapeniKalkulator
         add_action('admin_notices', function () {
             echo '<div class="notice notice-success is-dismissible"><p>Nastavení bylo úspěšně uloženo!</p></div>';
         });
+    }
+
+    /**
+     * Sanitizace font-style hodnot
+     */
+    private function sanitize_font_style($value)
+    {
+        $allowed_styles = array('normal', 'italic');
+        return in_array($value, $allowed_styles) ? $value : 'normal';
+    }
+
+    /**
+     * Sanitizace text-transform hodnot
+     */
+    private function sanitize_text_transform($value)
+    {
+        $allowed_transforms = array('none', 'uppercase', 'lowercase', 'capitalize');
+        return in_array($value, $allowed_transforms) ? $value : 'none';
     }
 
     private function handle_font_upload($file)
@@ -367,18 +401,23 @@ class PodlahoveVytapeniKalkulator
             }
         }
         
-        // Font velikosti a váhy
+        // Font velikosti, váhy a NOVĚ styly - opravené selektory
         if (isset($settings['heading_font_size'])) {
             echo ".pv-floor-header h3 {\n";
             echo "    font-size: {$settings['heading_font_size']}px !important;\n";
             echo "    font-weight: {$settings['heading_font_weight']} !important;\n";
+            echo "    font-style: {$settings['heading_font_style']} !important;\n";
+            echo "    text-transform: {$settings['heading_text_transform']} !important;\n";
             echo "}\n";
         }
         
         if (isset($settings['label_font_size'])) {
-            echo ".pv-form-group label {\n";
+            // Pouze labely formulářových skupin, ne text v dlaždicích
+            echo ".pv-form-group > label {\n";
             echo "    font-size: {$settings['label_font_size']}px !important;\n";
             echo "    font-weight: {$settings['label_font_weight']} !important;\n";
+            echo "    font-style: {$settings['label_font_style']} !important;\n";
+            echo "    text-transform: {$settings['label_text_transform']} !important;\n";
             echo "}\n";
         }
         
@@ -386,6 +425,8 @@ class PodlahoveVytapeniKalkulator
             echo ".pv-btn {\n";
             echo "    font-size: {$settings['button_font_size']}px !important;\n";
             echo "    font-weight: {$settings['button_font_weight']} !important;\n";
+            echo "    font-style: {$settings['button_font_style']} !important;\n";
+            echo "    text-transform: {$settings['button_text_transform']} !important;\n";
             echo "}\n";
         }
         

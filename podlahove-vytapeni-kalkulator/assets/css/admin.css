@@ -1,4 +1,4 @@
-/* Administrace kalkulátoru podlahového vytápění s rozšířenou podporou fontů */
+/* Administrace kalkulátoru podlahového vytápění s rozšířenou podporou fontů a stylů */
 
 .pv-admin-container {
     display: flex;
@@ -57,18 +57,19 @@
     width: 100px !important;
 }
 
-/* Font Controls - Flexbox layout pro velikost a váhu */
+/* Font Controls - Opravený flexbox layout pro zobrazení vedle sebe */
 .pv-font-controls {
-    display: flex;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
     gap: 1rem;
-    align-items: flex-end;
-    flex-wrap: wrap;
+    align-items: end;
 }
 
 .pv-font-control {
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
+    min-width: 120px;
 }
 
 .pv-font-control label {
@@ -76,15 +77,37 @@
     font-weight: 600;
     color: #666;
     margin: 0;
+    white-space: nowrap;
 }
 
 .pv-font-control input,
 .pv-font-control select {
-    min-width: 120px;
+    width: 100%;
+    font-size: 13px;
+    padding: 6px 8px;
+    box-sizing: border-box;
 }
 
 .pv-font-control .small-text {
-    min-width: 80px;
+    max-width: none;
+}
+
+/* Specifická šířka pro různé typy kontrol */
+.pv-font-control:has(input[type="number"]) {
+    grid-column: span 1;
+    max-width: 120px;
+}
+
+.pv-font-control:has(select[name$="_weight"]) {
+    min-width: 150px;
+}
+
+.pv-font-control:has(select[name$="_style"]) {
+    min-width: 120px;
+}
+
+.pv-font-control:has(select[name$="_transform"]) {
+    min-width: 140px;
 }
 
 /* Info Box Styling */
@@ -208,7 +231,7 @@
     box-shadow: none !important;
 }
 
-/* Font Preview Section - Enhanced */
+/* Font Preview Section - Enhanced pro styly */
 .pv-font-preview {
     margin-top: 20px;
     padding: 25px;
@@ -232,6 +255,7 @@
 
 .pv-preview-section {
     padding-left: 20px;
+    transition: all 0.3s ease;
 }
 
 .pv-preview-heading {
@@ -240,10 +264,39 @@
     transition: all 0.3s ease;
     border-bottom: 1px solid #e0e0e0;
     padding-bottom: 10px;
+    position: relative;
+}
+
+/* Styling indicators pro preview elementy */
+.pv-preview-heading::after {
+    content: "Nadpis";
+    position: absolute;
+    top: -25px;
+    right: 0;
+    font-size: 10px;
+    color: #666;
+    background: rgba(255,255,255,0.9);
+    padding: 2px 6px;
+    border-radius: 3px;
+    opacity: 0.7;
 }
 
 .pv-preview-labels {
     margin-bottom: 20px;
+    position: relative;
+}
+
+.pv-preview-labels::after {
+    content: "Popisky";
+    position: absolute;
+    top: -15px;
+    right: 0;
+    font-size: 10px;
+    color: #666;
+    background: rgba(255,255,255,0.9);
+    padding: 2px 6px;
+    border-radius: 3px;
+    opacity: 0.7;
 }
 
 .pv-preview-label {
@@ -258,6 +311,20 @@
     display: flex;
     gap: 12px;
     flex-wrap: wrap;
+    position: relative;
+}
+
+.pv-preview-buttons::after {
+    content: "Tlačítka";
+    position: absolute;
+    top: -15px;
+    right: 0;
+    font-size: 10px;
+    color: #666;
+    background: rgba(255,255,255,0.9);
+    padding: 2px 6px;
+    border-radius: 3px;
+    opacity: 0.7;
 }
 
 .pv-preview-button {
@@ -324,14 +391,30 @@
     outline: none;
 }
 
-/* Live Preview Animation */
+/* Live Preview Animation - rozšířeno */
 @keyframes fontChange {
-    0% { opacity: 0.5; transform: scale(0.98); }
+    0% { opacity: 0.6; transform: scale(0.98); }
     100% { opacity: 1; transform: scale(1); }
 }
 
-.pv-preview-section .font-changing {
+.pv-preview-section.font-changing {
     animation: fontChange 0.4s ease-out;
+}
+
+/* Speciální animace pro style preview */
+@keyframes styleDemo {
+    0% { 
+        background: rgba(255, 235, 59, 0.3);
+        transform: scale(1.02);
+    }
+    100% { 
+        background: transparent;
+        transform: scale(1);
+    }
+}
+
+.pv-preview-section.style-demo {
+    animation: styleDemo 1s ease-out;
 }
 
 /* Error states */
@@ -379,21 +462,56 @@
     animation: slideIn 0.3s ease-out;
 }
 
-/* Font Controls Responsive */
+/* Font Controls Responsive - opraveno pro grid layout */
+@media (max-width: 1200px) {
+    .pv-font-controls {
+        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+        gap: 0.75rem;
+    }
+}
+
+@media (max-width: 900px) {
+    .pv-font-controls {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1rem;
+    }
+    
+    .pv-font-control {
+        min-width: auto;
+    }
+}
+
 @media (max-width: 768px) {
     .pv-font-controls {
-        flex-direction: column;
-        align-items: stretch;
+        grid-template-columns: 1fr;
+        gap: 1rem;
     }
     
     .pv-font-control {
         width: 100%;
+        min-width: auto;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        background: #f8f8f8;
+        padding: 12px 15px;
+        border-radius: 6px;
+        border: 1px solid #e0e0e0;
+    }
+    
+    .pv-font-control label {
+        margin-bottom: 0;
+        font-size: 13px;
+        min-width: 100px;
+        text-align: left;
     }
     
     .pv-font-control input,
     .pv-font-control select {
-        min-width: auto;
-        width: 100%;
+        width: auto;
+        flex: 1;
+        max-width: 150px;
+        margin-left: 15px;
     }
 }
 
@@ -468,6 +586,13 @@
     #selected_font {
         max-width: none;
     }
+
+    /* Skrýt style indicators na mobilu */
+    .pv-preview-heading::after,
+    .pv-preview-labels::after,
+    .pv-preview-buttons::after {
+        display: none;
+    }
 }
 
 /* Velmi malé obrazovky */
@@ -515,6 +640,30 @@
     
     .pv-preview-label {
         font-size: 13px;
+    }
+
+    .pv-font-controls {
+        grid-template-columns: 1fr;
+        gap: 0.75rem;
+    }
+    
+    .pv-font-control {
+        flex-direction: column;
+        align-items: stretch;
+        padding: 10px 12px;
+    }
+    
+    .pv-font-control label {
+        margin-bottom: 6px;
+        min-width: auto;
+        text-align: center;
+    }
+    
+    .pv-font-control input,
+    .pv-font-control select {
+        margin-left: 0;
+        max-width: none;
+        width: 100%;
     }
 }
 
@@ -615,5 +764,24 @@
 }
 
 .pv-preview-section [data-element]:hover::before {
+    opacity: 1;
+}
+
+/* Style Preview Helper - pro live ukázku změn */
+.pv-style-preview-helper {
+    position: fixed;
+    top: 10px;
+    right: 10px;
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-size: 12px;
+    z-index: 9999;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.pv-style-preview-helper.show {
     opacity: 1;
 }
