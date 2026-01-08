@@ -367,14 +367,22 @@
     outline-offset: 2px;
 }
 
-/* Třída pro aktivní checkbox (zaškrtnutý) */
+/* Třída pro aktivní checkbox (zaškrtnutý) - s JS třídou */
 .pv-checkbox-option.pv-checkbox-active {
     background: var(--primary-color) !important;
     border-color: var(--primary-color) !important;
     color: white !important;
 }
 
-.pv-checkbox-option.pv-checkbox-active:hover {
+/* FALLBACK: Aktivní checkbox pomocí :has() selektoru - funguje i bez JavaScriptu */
+.pv-checkbox-option:has(input[type="checkbox"]:checked) {
+    background: var(--primary-color) !important;
+    border-color: var(--primary-color) !important;
+    color: white !important;
+}
+
+.pv-checkbox-option.pv-checkbox-active:hover,
+.pv-checkbox-option:has(input[type="checkbox"]:checked):hover {
     background: var(--primary-color) !important;
     transform: translateY(-1px);
 }
@@ -397,6 +405,46 @@
     margin-left: 0;
     color: inherit;
     transition: color 0.3s ease;
+    display: inline-block;
+    position: relative;
+    padding-left: 0;
+    transition: padding-left 0.3s ease;
+}
+
+/* Fajfka před textem u zaškrtnutého checkboxu - s JS třídou */
+.pv-checkbox-option.pv-checkbox-active span:not(.pv-checkbox-custom)::before {
+    content: "✓";
+    font-size: 1.2em;
+    font-weight: bold;
+    margin-right: 0.5rem;
+    display: inline-block;
+    color: white !important;
+    animation: checkmarkAppear 0.3s ease-out;
+}
+
+/* FALLBACK: Fajfka pomocí :has() - funguje i bez JavaScriptu */
+.pv-checkbox-option:has(input[type="checkbox"]:checked) span:not(.pv-checkbox-custom)::before {
+    content: "✓";
+    font-size: 1.2em;
+    font-weight: bold;
+    margin-right: 0.5rem;
+    display: inline-block;
+    color: white !important;
+    animation: checkmarkAppear 0.3s ease-out;
+}
+
+@keyframes checkmarkAppear {
+    0% {
+        opacity: 0;
+        transform: scale(0.5);
+    }
+    50% {
+        transform: scale(1.2);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
 }
 
 /* Tlačítka */
@@ -809,6 +857,12 @@
     .pv-success-message {
         padding: 2rem 1rem;
     }
+    
+    /* Menší fajfka na mobilech */
+    .pv-checkbox-option.pv-checkbox-active span:not(.pv-checkbox-custom)::before {
+        font-size: 1.1em;
+        margin-right: 0.4rem;
+    }
 }
 
 /* Velmi malé telefony (do 360px) */
@@ -840,6 +894,12 @@
         padding: 0.75rem 2rem 0.75rem 0.65rem;
         background-size: 1.1em 1.1em;
         background-position: right 0.4rem center;
+    }
+    
+    /* Ještě menší fajfka na velmi malých mobilech */
+    .pv-checkbox-option.pv-checkbox-active span:not(.pv-checkbox-custom)::before {
+        font-size: 1em;
+        margin-right: 0.3rem;
     }
 }
 

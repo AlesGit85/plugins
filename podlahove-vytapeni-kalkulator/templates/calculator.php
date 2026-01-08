@@ -123,7 +123,7 @@ if (!defined('ABSPATH')) {
                 <div class="pv-form-row">
                     <div class="pv-form-group pv-checkbox-group">
                         <label class="pv-checkbox-option">
-                            <input type="checkbox" id="pv-contact-support" name="contact_support">
+                            <input type="checkbox" id="pv-contact-support" name="contact_support" checked>
                             <span class="pv-checkbox-custom"></span>
                             <span>Mám zájem o kontaktování technické podpory pro upřesnění a zaslání detailního výpisu prvků pro můj projekt</span>
                         </label>

@@ -36,9 +36,17 @@ console.log('JavaScript načten:', new Date().getTime());
 
         updateRemoveButtons();
 
-        // Počáteční aktualizace stylů s malým zpožděním
+        // KRITICKÉ: Okamžitá aktualizace checkbox stylů - bez timeoutu
+        updateCheckboxStyles();
+        
+        // Počáteční aktualizace stylů s malým zpožděním jako záloha
         setTimeout(function () {
             updateRadioStyles();
+            updateCheckboxStyles();
+        }, 100);
+        
+        // Další záloha pro jistotu
+        setTimeout(function () {
             updateCheckboxStyles();
         }, 500);
     }
@@ -272,7 +280,25 @@ console.log('JavaScript načten:', new Date().getTime());
     }
 
     function showContactSection() {
-        $('#pv-contact-section').slideDown(300);
+        console.log('=== ZOBRAZUJI KONTAKTNÍ SEKCI ===');
+        
+        $('#pv-contact-section').slideDown(300, function() {
+            // Callback se zavolá PO dokončení animace slideDown
+            console.log('Kontaktní sekce je viditelná, aktualizuji checkbox...');
+            
+            // Teď můžeme bezpečně aktualizovat checkbox styly
+            updateCheckboxStyles();
+            
+            // Další pokus o 100ms pro jistotu
+            setTimeout(function() {
+                updateCheckboxStyles();
+            }, 100);
+            
+            // A ještě jeden pokus o 500ms
+            setTimeout(function() {
+                updateCheckboxStyles();
+            }, 500);
+        });
     }
 
     function sendCalculation() {
@@ -411,23 +437,125 @@ console.log('JavaScript načten:', new Date().getTime());
     }
 
     function updateCheckboxStyles() {
+        console.log('=== AKTUALIZUJI CHECKBOX STYLY ===');
+        
+        // Najdi VŠECHNY checkboxy (i ve skrytých sekcích)
+        const allCheckboxes = $('input[type="checkbox"]');
+        console.log('Celkový počet checkboxů na stránce:', allCheckboxes.length);
+        
+        if (allCheckboxes.length === 0) {
+            console.warn('⚠️ ŽÁDNÉ CHECKBOXY NENALEZENY! Sekce může být skrytá.');
+            return;
+        }
+        
         // Projdeme všechny checkboxy a aktualizujeme styly
-        $('input[type="checkbox"]').each(function () {
+        allCheckboxes.each(function () {
             const checkbox = $(this);
             const checkboxOption = checkbox.closest('.pv-checkbox-option');
+            const isChecked = checkbox.is(':checked');
+            const isProp = checkbox.prop('checked');
+            const isVisible = checkbox.is(':visible');
+            const parentVisible = checkboxOption.is(':visible');
 
-            if (checkbox.is(':checked')) {
+            console.log('Checkbox ID:', checkbox.attr('id') || 'bez ID');
+            console.log('  - is(:checked):', isChecked);
+            console.log('  - prop(checked):', isProp);
+            console.log('  - is(:visible):', isVisible);
+            console.log('  - Parent .pv-checkbox-option exists:', checkboxOption.length > 0);
+            console.log('  - Parent visible:', parentVisible);
+
+            if (isChecked || isProp) {
                 checkboxOption.addClass('pv-checkbox-active');
+                console.log('  ✓ Přidána třída pv-checkbox-active');
+                
+                // Debug - zkontroluj zda má element tu třídu
+                setTimeout(function() {
+                    if (checkboxOption.hasClass('pv-checkbox-active')) {
+                        console.log('  ✓✓ POTVRZENO: Element má třídu pv-checkbox-active');
+                    } else {
+                        console.error('  ✗✗ CHYBA: Třída nebyla přidána!');
+                    }
+                }, 50);
+                
             } else {
                 checkboxOption.removeClass('pv-checkbox-active');
+                console.log('  ✗ Odebrána třída pv-checkbox-active');
             }
         });
+        
+        // Debug vypis všech elementů s třídou pv-checkbox-active
+        const activeCheckboxes = $('.pv-checkbox-active');
+        console.log('Počet aktivních checkboxů:', activeCheckboxes.length);
+        if (activeCheckboxes.length > 0) {
+            console.log('✓✓✓ FAJFKA BY SE MĚLA ZOBRAZIT! ✓✓✓');
+            
+            // Další debug - zkontroluj CSS
+            const firstActive = activeCheckboxes.first();
+            const span = firstActive.find('span:not(.pv-checkbox-custom)');
+            console.log('Span element existuje:', span.length > 0);
+            if (span.length > 0) {
+                const computedBefore = window.getComputedStyle(span[0], '::before');
+                console.log('::before content:', computedBefore.getPropertyValue('content'));
+                console.log('::before color:', computedBefore.getPropertyValue('color'));
+            }
+        } else {
+            console.warn('⚠️ ŽÁDNÉ AKTIVNÍ CHECKBOXY!');
+        }
     }
 
     // Export pro další použití
     window.PVCalculator = {
         formatPrice: formatPrice,
-        smoothScrollTo: smoothScrollTo
+        smoothScrollTo: smoothScrollTo,
+        updateCheckboxStyles: updateCheckboxStyles,  // Export pro manuální volání
+        
+        // Diagnostická funkce
+        diagnoseCheckbox: function() {
+            console.log('====================================');
+            console.log('DIAGNOSTIKA CHECKBOXU');
+            console.log('====================================');
+            
+            const checkbox = $('#pv-contact-support');
+            console.log('1. Checkbox element nalezen:', checkbox.length > 0);
+            console.log('2. Checkbox je zaškrtnutý:', checkbox.is(':checked'));
+            console.log('3. Checkbox prop checked:', checkbox.prop('checked'));
+            
+            const parent = checkbox.closest('.pv-checkbox-option');
+            console.log('4. Parent .pv-checkbox-option nalezen:', parent.length > 0);
+            console.log('5. Parent má třídu pv-checkbox-active:', parent.hasClass('pv-checkbox-active'));
+            console.log('6. Parent je viditelný:', parent.is(':visible'));
+            
+            const section = $('#pv-contact-section');
+            console.log('7. Kontaktní sekce je viditelná:', section.is(':visible'));
+            
+            const span = parent.find('span:not(.pv-checkbox-custom)');
+            console.log('8. Span element nalezen:', span.length > 0);
+            
+            if (span.length > 0) {
+                const computedBefore = window.getComputedStyle(span[0], '::before');
+                const content = computedBefore.getPropertyValue('content');
+                const color = computedBefore.getPropertyValue('color');
+                const fontSize = computedBefore.getPropertyValue('font-size');
+                
+                console.log('9. ::before pseudo-element:');
+                console.log('   - content:', content);
+                console.log('   - color:', color);
+                console.log('   - font-size:', fontSize);
+                
+                if (content === '"✓"' || content === '✓') {
+                    console.log('✓✓✓ FAJFKA JE SPRÁVNĚ NASTAVENÁ!');
+                } else {
+                    console.warn('⚠️ FAJFKA NENÍ NASTAVENÁ! Content:', content);
+                }
+            }
+            
+            // Pokus o force update
+            console.log('10. Zkouším force update...');
+            updateCheckboxStyles();
+            
+            console.log('====================================');
+            return 'Diagnostika dokončena - viz výstup výše';
+        }
     };
 
 })(jQuery);
