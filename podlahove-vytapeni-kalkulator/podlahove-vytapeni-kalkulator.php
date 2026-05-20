@@ -4,7 +4,7 @@
  * Plugin Name: Kalkulátor podlahového vytápění
  * Plugin URI: https://allimedia.cz/
  * Description: Plugin pro výpočet nákladů na realizaci podlahového vytápění s administračním rozhraním a pokročilou font customizací včetně stylů písma.
- * Version: 1.8.7
+ * Version: 1.9.0
  * Author: Allimedia.cz
  * Author URI: https://allimedia.cz/
  * Text Domain: podlahove-vytapeni
@@ -21,7 +21,7 @@ if (!defined('ABSPATH')) {
 // Definice konstant
 define('PV_PLUGIN_URL', plugin_dir_url(__FILE__));
 define('PV_PLUGIN_PATH', plugin_dir_path(__FILE__));
-define('PV_VERSION', '1.8.0');
+define('PV_VERSION', '1.8.9');
 
 class PodlahoveVytapeniKalkulator
 {
@@ -37,8 +37,11 @@ class PodlahoveVytapeniKalkulator
         register_activation_hook(__FILE__, array($this, 'activate'));
         register_deactivation_hook(__FILE__, array($this, 'deactivate'));
 
-        // Vytvoření upload složky pro fonty při aktivaci
         add_action('wp_loaded', array($this, 'create_font_upload_dir'));
+
+        // Email odesílatele
+        add_filter('wp_mail_from', array($this, 'custom_mail_from'));
+        add_filter('wp_mail_from_name', array($this, 'custom_mail_from_name'));
     }
 
     public function init()
@@ -50,7 +53,7 @@ class PodlahoveVytapeniKalkulator
         add_action('wp_ajax_nopriv_calculate_heating', array($this, 'ajax_calculate_heating'));
         add_action('wp_ajax_send_calculation_email', array($this, 'ajax_send_calculation_email'));
         add_action('wp_ajax_nopriv_send_calculation_email', array($this, 'ajax_send_calculation_email'));
-        
+
         // AJAX akce pro fonty
         add_action('wp_ajax_pv_delete_font', array($this, 'ajax_delete_font'));
         add_action('wp_ajax_pv_preview_font', array($this, 'ajax_preview_font'));
@@ -82,11 +85,11 @@ class PodlahoveVytapeniKalkulator
             'button_hover_color' => '#008a2e',
             'button_hover_text_color' => '#ffffff',
             'hover_background' => '#f0f8ff',
-            
+
             // Font nastavení
             'uploaded_fonts' => array(),
             'selected_font' => 'default',
-            
+
             // Font velikosti a váhy
             'heading_font_size' => 20,
             'heading_font_weight' => 600,
@@ -94,7 +97,7 @@ class PodlahoveVytapeniKalkulator
             'label_font_weight' => 600,
             'button_font_size' => 16,
             'button_font_weight' => 600,
-            
+
             // NOVÉ: Font styly a transformace
             'heading_font_style' => 'normal',
             'heading_text_transform' => 'none',
@@ -117,10 +120,10 @@ class PodlahoveVytapeniKalkulator
     {
         $upload_dir = wp_upload_dir();
         $font_dir = $upload_dir['basedir'] . '/pv-fonts';
-        
+
         if (!file_exists($font_dir)) {
             wp_mkdir_p($font_dir);
-            
+
             // Vytvoření .htaccess pro bezpečnost (volitelné)
             $htaccess_content = "# Povolit pouze font soubory\n";
             $htaccess_content .= "<FilesMatch \"\\.(woff|woff2|ttf|otf)$\">\n";
@@ -129,9 +132,31 @@ class PodlahoveVytapeniKalkulator
             $htaccess_content .= "<FilesMatch \"\\.(php|js|html)$\">\n";
             $htaccess_content .= "    Deny from all\n";
             $htaccess_content .= "</FilesMatch>\n";
-            
+
             file_put_contents($font_dir . '/.htaccess', $htaccess_content);
         }
+    }
+
+    /**
+     * Vlastní email odesílatele - UNIVERZÁLNÍ
+     */
+    public function custom_mail_from($original_email_address)
+    {
+        // Automaticky vezme doménu z WordPress instalace
+        $domain = parse_url(home_url(), PHP_URL_HOST);
+        // Odstraní www. pokud existuje
+        $domain = preg_replace('/^www\./', '', $domain);
+        return 'noreply@' . $domain;
+    }
+
+    /**
+     * Vlastní jméno odesílatele
+     */
+    public function custom_mail_from_name($original_email_from)
+    {
+        $settings = get_option('pv_settings');
+        // Použije název firmy z nastavení
+        return $settings['company_name'] ?? get_option('blogname');
     }
 
     public function enqueue_scripts()
@@ -158,7 +183,7 @@ class PodlahoveVytapeniKalkulator
         wp_enqueue_script('wp-color-picker');
         wp_enqueue_style('pv-admin-style', PV_PLUGIN_URL . 'assets/css/admin.css', array(), PV_VERSION);
         wp_enqueue_script('pv-admin-script', PV_PLUGIN_URL . 'assets/js/admin.js', array('jquery', 'wp-color-picker'), PV_VERSION, true);
-        
+
         // Localize script pro font handling
         wp_localize_script('pv-admin-script', 'pv_admin_ajax', array(
             'ajax_url' => admin_url('admin-ajax.php'),
@@ -213,7 +238,7 @@ class PodlahoveVytapeniKalkulator
             'button_hover_text_color' => sanitize_hex_color($_POST['button_hover_text_color']),
             'hover_background' => sanitize_hex_color($_POST['hover_background']),
             'selected_font' => sanitize_text_field($_POST['selected_font']),
-            
+
             // Font velikosti a váhy
             'heading_font_size' => intval($_POST['heading_font_size']),
             'heading_font_weight' => intval($_POST['heading_font_weight']),
@@ -221,7 +246,7 @@ class PodlahoveVytapeniKalkulator
             'label_font_weight' => intval($_POST['label_font_weight']),
             'button_font_size' => intval($_POST['button_font_size']),
             'button_font_weight' => intval($_POST['button_font_weight']),
-            
+
             // NOVÉ: Font styly a transformace
             'heading_font_style' => $this->sanitize_font_style($_POST['heading_font_style']),
             'heading_text_transform' => $this->sanitize_text_transform($_POST['heading_text_transform']),
@@ -241,7 +266,7 @@ class PodlahoveVytapeniKalkulator
             if ($uploaded_font) {
                 $font_key = sanitize_title(pathinfo($_FILES['custom_font_upload']['name'], PATHINFO_FILENAME));
                 $font_key = $font_key . '_' . time(); // Přidat timestamp pro unikátnost
-                
+
                 $settings['uploaded_fonts'][$font_key] = $uploaded_font;
             }
         }
@@ -282,7 +307,7 @@ class PodlahoveVytapeniKalkulator
         // Validace typu souboru
         $allowed_types = array('woff', 'woff2', 'ttf', 'otf');
         $file_extension = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
-        
+
         if (!in_array($file_extension, $allowed_types)) {
             add_action('admin_notices', function () {
                 echo '<div class="notice notice-error is-dismissible"><p>Nepodporovaný formát fontu. Použijte WOFF, WOFF2, TTF nebo OTF.</p></div>';
@@ -301,10 +326,10 @@ class PodlahoveVytapeniKalkulator
         // Přesun souboru do upload složky
         $upload_dir = wp_upload_dir();
         $font_dir = $upload_dir['basedir'] . '/pv-fonts';
-        
+
         $sanitized_filename = sanitize_file_name($file['name']);
         $target_path = $font_dir . '/' . $sanitized_filename;
-        
+
         // Pokud soubor existuje, přidat timestamp
         if (file_exists($target_path)) {
             $pathinfo = pathinfo($sanitized_filename);
@@ -342,44 +367,44 @@ class PodlahoveVytapeniKalkulator
     public function ajax_delete_font()
     {
         check_ajax_referer('pv_admin_nonce', 'nonce');
-        
+
         if (!current_user_can('manage_options')) {
             wp_send_json_error('Nemáte oprávnění');
         }
 
         $font_key = sanitize_text_field($_POST['font_key']);
         $settings = get_option('pv_settings');
-        
+
         if (isset($settings['uploaded_fonts'][$font_key])) {
             $font_info = $settings['uploaded_fonts'][$font_key];
-            
+
             // Smazat soubor z disku
             if (file_exists($font_info['path'])) {
                 unlink($font_info['path']);
             }
-            
+
             // Odebrat z nastavení
             unset($settings['uploaded_fonts'][$font_key]);
-            
+
             // Pokud byl odstraněný font aktivní, nastavit default
             if ($settings['selected_font'] === $font_key) {
                 $settings['selected_font'] = 'default';
             }
-            
+
             update_option('pv_settings', $settings);
-            
+
             wp_send_json_success('Font byl úspěšně odstraněn');
         }
-        
+
         wp_send_json_error('Font nebyl nalezen');
     }
 
     public function output_custom_css()
     {
         $settings = get_option('pv_settings');
-        
+
         echo '<style id="pv-custom-styles">';
-        
+
         // Font faces
         if (!empty($settings['uploaded_fonts']) && $settings['selected_font'] !== 'default') {
             foreach ($settings['uploaded_fonts'] as $font_key => $font_info) {
@@ -389,7 +414,7 @@ class PodlahoveVytapeniKalkulator
                 echo "    font-display: swap;\n";
                 echo "}\n";
             }
-            
+
             // Aplikovat vybraný font
             if (isset($settings['uploaded_fonts'][$settings['selected_font']])) {
                 echo ".pv-calculator {\n";
@@ -400,7 +425,7 @@ class PodlahoveVytapeniKalkulator
                 echo "}\n";
             }
         }
-        
+
         // Font velikosti, váhy a NOVĚ styly - opravené selektory
         if (isset($settings['heading_font_size'])) {
             echo ".pv-floor-header h3 {\n";
@@ -410,7 +435,7 @@ class PodlahoveVytapeniKalkulator
             echo "    text-transform: {$settings['heading_text_transform']} !important;\n";
             echo "}\n";
         }
-        
+
         if (isset($settings['label_font_size'])) {
             // Pouze labely formulářových skupin, ne text v dlaždicích
             echo ".pv-form-group > label {\n";
@@ -420,7 +445,7 @@ class PodlahoveVytapeniKalkulator
             echo "    text-transform: {$settings['label_text_transform']} !important;\n";
             echo "}\n";
         }
-        
+
         if (isset($settings['button_font_size'])) {
             echo ".pv-btn {\n";
             echo "    font-size: {$settings['button_font_size']}px !important;\n";
@@ -429,7 +454,7 @@ class PodlahoveVytapeniKalkulator
             echo "    text-transform: {$settings['button_text_transform']} !important;\n";
             echo "}\n";
         }
-        
+
         echo '</style>';
     }
 
@@ -525,6 +550,35 @@ class PodlahoveVytapeniKalkulator
         ));
     }
 
+    /**
+     * NOVÁ FUNKCE: Převede kódové hodnoty na čitelný text
+     */
+    private function get_readable_parameter($type, $value)
+    {
+        $labels = array(
+            'installation_type' => array(
+                'tacker' => 'Tacker systém (instalace na folii)',
+                'system_board' => 'Systémová deska (s výstupky)'
+            ),
+            'pipe_type' => array(
+                'pe_16x2' => '16x2 polyethylenová trubka (bez příplatku)',
+                'pe_17x2' => '17x2 polyethylenová trubka',
+                'pe_18x2' => '18x2 polyethylenová trubka',
+                'alu_16x2' => '16x2 plastohliníková trubka',
+                'alu_18x2' => '18x2 plastohliníková trubka',
+                'advice' => 'Nevím - nechám si poradit'
+            ),
+            'heat_source' => array(
+                'low_temp' => 'Nízkoteplotní (TČ, kondenzační kotel, elektrokotel)',
+                'high_temp' => 'Vysokoteplotní (tuhá paliva, akumulační zásobníky)',
+                'radiator_combo' => 'Kombinace s radiátory',
+                '' => 'Použije se dle 1. podlaží'
+            )
+        );
+
+        return $labels[$type][$value] ?? $value;
+    }
+
     public function ajax_send_calculation_email()
     {
         check_ajax_referer('pv_calculator_nonce', 'nonce');
@@ -535,40 +589,125 @@ class PodlahoveVytapeniKalkulator
         $contact_support = ($_POST['contact_support'] ?? '0') === '1';
         $calculation_details = json_decode(stripslashes($_POST['calculation_details']), true);
 
+        // NOVÉ: Zpracování kompletních dat o podlažích
+        $floors_data = json_decode(stripslashes($_POST['floors_data']), true);
+
         $settings = get_option('pv_settings');
 
-        // Email zákazníkovi
+        // Email zákazníkovi - NOVÝ DETAILNÍ FORMÁT
         $subject = 'Výpočet nákladů na podlahové vytápění';
         $message = "Dobrý den,\n\n";
         $message .= "děkujeme za využití naší kalkulačky podlahového vytápění.\n\n";
-        $message .= "Vaše kalkulace:\n";
 
-        foreach ($calculation_details as $detail) {
-            $message .= "Podlaží {$detail['floor']}: {$detail['area']} m² = " . number_format($detail['cost'], 2, ',', ' ') . " Kč\n";
+        $message .= "═══════════════════════════════════════════════\n";
+        $message .= "VAŠE KALKULACE - DETAILNÍ PŘEHLED\n";
+        $message .= "═══════════════════════════════════════════════\n\n";
+
+        // Detaily každého podlaží pro zákazníka
+        foreach ($calculation_details as $index => $detail) {
+            $floor_num = $detail['floor'];
+
+            $message .= "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n";
+            $message .= "PODLAŽÍ {$floor_num}\n";
+            $message .= "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n";
+            $message .= "📐 Plocha: {$detail['area']} m²\n";
+
+            // Přidání detailů z floors_data
+            if (isset($floors_data[$index])) {
+                $floor_info = $floors_data[$index];
+
+                $message .= "🔧 Instalace: " . $this->get_readable_parameter('installation_type', $floor_info['installation_type']) . "\n";
+                $message .= "🔩 Potrubí: " . $this->get_readable_parameter('pipe_type', $floor_info['pipe_type']) . "\n";
+
+                // Zdroj tepla pouze pro první podlaží nebo pokud je vyplněný
+                if ($index === 0 || !empty($floor_info['heat_source'])) {
+                    $message .= "🔥 Zdroj tepla: " . $this->get_readable_parameter('heat_source', $floor_info['heat_source']) . "\n";
+                }
+            }
+
+            $message .= "\n💰 Cena podlaží: " . number_format($detail['cost'], 2, ',', ' ') . " Kč\n\n";
         }
 
-        $message .= "\nCelková orientační cena: " . number_format($total_cost, 2, ',', ' ') . " Kč\n\n";
+        $message .= "═══════════════════════════════════════════════\n";
+        $message .= "✨ CELKOVÁ ORIENTAČNÍ CENA: " . number_format($total_cost, 2, ',', ' ') . " Kč\n";
+        $message .= "═══════════════════════════════════════════════\n\n";
+
+        $message .= "ℹ️  Jedná se o orientační cenovou kalkulaci. Přesná cena\n";
+        $message .= "   bude stanovena po nezávazné konzultaci.\n\n";
 
         if ($contact_support) {
-            $message .= "Požádali jste o kontaktování naší technické podpory. Budeme vás kontaktovat v nejbližší době.\n\n";
+            $message .= "✅ POŽADAVEK NA KONTAKTOVÁNÍ\n";
+            $message .= "───────────────────────────────────────────────\n";
+            $message .= "Požádali jste o kontaktování naší technické podpory\n";
+            $message .= "pro upřesnění a zaslání detailního výpisu prvků.\n";
+            $message .= "Budeme vás kontaktovat v nejbližší pracovní době.\n\n";
+            $message .= "Vaše kontaktní údaje:\n";
+            $message .= "📧 Email: {$email}\n";
+            if ($phone) {
+                $message .= "📞 Telefon: {$phone}\n";
+            }
+            $message .= "\n";
         }
 
-        $message .= "S pozdravem,\n" . $settings['company_name'];
+        $message .= "Máte dotazy? Neváhejte nás kontaktovat!\n\n";
+        $message .= "S pozdravem,\n";
+        $message .= $settings['company_name'];
 
         wp_mail($email, $subject, $message);
 
-        // Email administrátorovi
+        // Email administrátorovi - NOVÝ ROZŠÍŘENÝ FORMÁT
         if ($contact_support) {
             $admin_subject = 'Nová žádost o kontaktování - Kalkulátor podlahového vytápění';
             $admin_message = "Nová žádost o kontaktování:\n\n";
+            $admin_message .= "══════════════════════════════════════════════\n";
+            $admin_message .= "KONTAKTNÍ ÚDAJE\n";
+            $admin_message .= "══════════════════════════════════════════════\n";
             $admin_message .= "Email: {$email}\n";
-            $admin_message .= "Telefon: {$phone}\n";
-            $admin_message .= "Celková cena: " . number_format($total_cost, 2, ',', ' ') . " Kč\n\n";
-            $admin_message .= "Detaily kalkulace:\n";
+            $admin_message .= "Telefon: " . ($phone ? $phone : 'neuvedeno') . "\n";
+            $admin_message .= "Datum žádosti: " . date('d.m.Y H:i:s') . "\n\n";
 
-            foreach ($calculation_details as $detail) {
-                $admin_message .= "Podlaží {$detail['floor']}: {$detail['area']} m² = " . number_format($detail['cost'], 2, ',', ' ') . " Kč\n";
+            $admin_message .= "══════════════════════════════════════════════\n";
+            $admin_message .= "SOUHRN KALKULACE\n";
+            $admin_message .= "══════════════════════════════════════════════\n";
+            $admin_message .= "Celková orientační cena: " . number_format($total_cost, 2, ',', ' ') . " Kč\n";
+            $admin_message .= "Počet podlaží: " . count($calculation_details) . "\n\n";
+
+            // NOVÉ: Detailní informace o každém podlaží
+            $admin_message .= "══════════════════════════════════════════════\n";
+            $admin_message .= "DETAILY PODLAŽÍ\n";
+            $admin_message .= "══════════════════════════════════════════════\n\n";
+
+            foreach ($calculation_details as $index => $detail) {
+                $floor_num = $detail['floor'];
+                $admin_message .= "─────────────────────────────────────────────\n";
+                $admin_message .= "PODLAŽÍ {$floor_num}\n";
+                $admin_message .= "─────────────────────────────────────────────\n";
+                $admin_message .= "Plocha: {$detail['area']} m²\n";
+
+                // Přidání detailů z floors_data
+                if (isset($floors_data[$index])) {
+                    $floor_info = $floors_data[$index];
+
+                    $admin_message .= "Varianta instalace: " . $this->get_readable_parameter('installation_type', $floor_info['installation_type']) . "\n";
+                    $admin_message .= "Typ potrubí: " . $this->get_readable_parameter('pipe_type', $floor_info['pipe_type']) . "\n";
+
+                    // Zdroj tepla pouze pro první podlaží nebo pokud je vyplněný
+                    if ($index === 0 || !empty($floor_info['heat_source'])) {
+                        $admin_message .= "Zdroj tepla: " . $this->get_readable_parameter('heat_source', $floor_info['heat_source']) . "\n";
+                    }
+                }
+
+                $admin_message .= "Cena podlaží: " . number_format($detail['cost'], 2, ',', ' ') . " Kč\n";
+                $admin_message .= "\n";
             }
+
+            $admin_message .= "══════════════════════════════════════════════\n\n";
+            $admin_message .= "Pro odpověď zákazníkovi použijte email: {$email}\n";
+            if ($phone) {
+                $admin_message .= "Pro telefonický kontakt: {$phone}\n";
+            }
+            $admin_message .= "\n---\n";
+            $admin_message .= "Tato zpráva byla vygenerována automaticky kalkulátorem podlahového vytápění.\n";
 
             wp_mail($settings['admin_email'], $admin_subject, $admin_message);
         }

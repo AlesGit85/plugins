@@ -324,6 +324,9 @@ console.log('JavaScript načten:', new Date().getTime());
         }
 
         showLoading(true);
+        
+        // Sesbíráme kompletní data o všech podlažích včetně parametrů
+        const floorsData = collectFloorData();
 
         $.ajax({
             url: pv_ajax.ajax_url,
@@ -335,7 +338,8 @@ console.log('JavaScript načten:', new Date().getTime());
                 phone: phone,
                 contact_support: contactSupport ? '1' : '0',
                 total_cost: calculationResult.total_cost,
-                calculation_details: JSON.stringify(calculationResult.details)
+                calculation_details: JSON.stringify(calculationResult.details),
+                floors_data: JSON.stringify(floorsData) // NOVÉ: Kompletní data o parametrech
             },
             success: function (response) {
                 showLoading(false);
